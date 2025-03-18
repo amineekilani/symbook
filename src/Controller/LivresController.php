@@ -5,21 +5,24 @@ namespace App\Controller;
 use App\Entity\Livres;
 use App\Repository\LivresRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class LivresController extends AbstractController
 {
-    #[Route('/livres', name: 'app_livres')]
-    public function all(LivresRepository $livresRepository): Response
+    #[Route('/admin/livres', name: 'app_livres')]
+    public function all(LivresRepository $livresRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $livres=$livresRepository->findAll();
+        $livres = $paginator->paginate($livresRepository->findAll(), $request->query->getInt('page', 1), 10);
         return $this->render('livres/index.html.twig', [
             'livres' => $livres
         ]);
     }
-    #[Route('/livres/create', name: 'app_livres_create')]
+    #[Route('/admin/livres/create', name: 'app_livres_create')]
     public function create(EntityManagerInterface $em): Response
     {
         $livre=new Livres();
@@ -35,7 +38,7 @@ final class LivresController extends AbstractController
         $em->flush();
         return new Response("Livre ".$livre->getId()." créé avec succès");
     }
-    #[Route('/livres/show', name: 'app_livres_showAll')]
+    #[Route('/admin/livres/show', name: 'app_livres_showAll')]
     public function showAll(LivresRepository $livresRepository): Response
     {
         $livres=$livresRepository->findAll();
@@ -45,7 +48,7 @@ final class LivresController extends AbstractController
         }
         dd($livres);
     }
-    #[Route('/livres/show/{id}', name: 'app_livres_show')]
+    #[Route('/admin/livres/show/{id}', name: 'app_livres_show')]
     public function show(Livres $livre): Response
     // Param convertor
     {
@@ -53,7 +56,7 @@ final class LivresController extends AbstractController
             'livre' => $livre
         ]);
     }
-    #[Route('/livres/show2', name: 'app_livres_show2')]
+    #[Route('/admin/livres/show2', name: 'app_livres_show2')]
     public function show2(LivresRepository $livresRepository): Response
     {
         $livre=$livresRepository->findOneBy(['titre'=>'Le Seigneur des Anneaux']);
@@ -63,7 +66,7 @@ final class LivresController extends AbstractController
         }
         dd($livre);
     }
-    #[Route('/livres/show3', name: 'app_livres_show3')]
+    #[Route('/admin/livres/show3', name: 'app_livres_show3')]
     public function show3(LivresRepository $livresRepository): Response
     {
         $livres=$livresRepository->findBy(['titre' => 'Le Seigneur des Anneaux'],
@@ -74,7 +77,7 @@ final class LivresController extends AbstractController
         }
         dd($livres);
     }
-    #[Route('/livres/delete/{id}', name: 'app_livres_delete')]
+    #[Route('/admin/livres/delete/{id}', name: 'app_livres_delete')]
     public function delete(EntityManagerInterface $em, Livres $livre): Response
     {
         $em->remove($livre);
@@ -82,7 +85,7 @@ final class LivresController extends AbstractController
         dd($livre);
         return new Response("Livre $id supprimé avec succès");
     }
-    #[Route('/livres/update/{id}', name: 'app_livres_update')]
+    #[Route('/admin/livres/update/{id}', name: 'app_livres_update')]
     public function update(Livres $livre, EntityManagerInterface $em): Response
     {
         $nvPrix=$livre->getPrix()*1.1;
