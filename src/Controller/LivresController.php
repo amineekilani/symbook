@@ -17,7 +17,7 @@ final class LivresController extends AbstractController
     public function all(LivresRepository $livresRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $livres=$livresRepository->findAll();
-        $livres = $paginator->paginate($livresRepository->findAll(), $request->query->getInt('page', 1), 10);
+        $livres=$paginator->paginate($livresRepository->findAll(), $request->query->getInt('page', 1), 10);
         return $this->render('livres/index.html.twig', [
             'livres' => $livres
         ]);
