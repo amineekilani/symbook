@@ -2,14 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoriesRepository;
+use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CategoriesRepository::class)]
-class Categories
+#[ORM\Entity(repositoryClass: CategorieRepository::class)]
+class Categorie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,13 +21,13 @@ class Categories
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     /**
-     * @var Collection<int, Livres>
+     * @var Collection<int, Livre>
      */
-    #[ORM\OneToMany(targetEntity: Livres::class, mappedBy: 'categorie')]
+    #[ORM\OneToMany(targetEntity: Livre::class, mappedBy: 'categorie')]
     private Collection $livres;
 
     public function __construct()
@@ -70,7 +69,7 @@ class Categories
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
+    public function setDescription(string $description): static
     {
         $this->description = $description;
 
@@ -78,14 +77,14 @@ class Categories
     }
 
     /**
-     * @return Collection<int, Livres>
+     * @return Collection<int, Livre>
      */
     public function getLivres(): Collection
     {
         return $this->livres;
     }
 
-    public function addLivre(Livres $livre): static
+    public function addLivre(Livre $livre): static
     {
         if (!$this->livres->contains($livre)) {
             $this->livres->add($livre);
@@ -95,7 +94,7 @@ class Categories
         return $this;
     }
 
-    public function removeLivre(Livres $livre): static
+    public function removeLivre(Livre $livre): static
     {
         if ($this->livres->removeElement($livre)) {
             // set the owning side to null (unless already changed)

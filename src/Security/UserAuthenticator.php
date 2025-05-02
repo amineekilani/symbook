@@ -50,7 +50,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         $roles=$token->getRoleNames();
         if(in_array('ROLE_ADMIN',$roles))
         {
-            return new RedirectResponse($this->urlGenerator->generate('app_livres_all'));
+            return new RedirectResponse($this->urlGenerator->generate('app_dashboard'));
         }
         if(in_array('ROLE_USER',$roles))
         {

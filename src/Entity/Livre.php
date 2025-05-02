@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\LivresRepository;
+use App\Repository\LivreRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: LivresRepository::class)]
-class Livres
+#[ORM\Entity(repositoryClass: LivreRepository::class)]
+class Livre
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -33,13 +33,13 @@ class Livres
     private ?string $editeur = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $dateedition = null;
+    private ?\DateTimeInterface $dateEdition = null;
 
     #[ORM\Column]
     private ?float $prix = null;
 
     #[ORM\ManyToOne(inversedBy: 'livres')]
-    private ?Categories $categorie = null;
+    private ?Categorie $categorie = null;
 
     public function getId(): ?int
     {
@@ -118,14 +118,14 @@ class Livres
         return $this;
     }
 
-    public function getDateedition(): ?\DateTimeInterface
+    public function getDateEdition(): ?\DateTimeInterface
     {
-        return $this->dateedition;
+        return $this->dateEdition;
     }
 
-    public function setDateedition(\DateTimeInterface $dateedition): static
+    public function setDateEdition(\DateTimeInterface $dateEdition): static
     {
-        $this->dateedition = $dateedition;
+        $this->dateEdition = $dateEdition;
 
         return $this;
     }
@@ -142,12 +142,12 @@ class Livres
         return $this;
     }
 
-    public function getCategorie(): ?Categories
+    public function getCategorie(): ?Categorie
     {
         return $this->categorie;
     }
 
-    public function setCategorie(?Categories $categorie): static
+    public function setCategorie(?Categorie $categorie): static
     {
         $this->categorie = $categorie;
 

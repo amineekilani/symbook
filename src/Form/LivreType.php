@@ -2,14 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\Categories;
-use App\Entity\Livres;
+use App\Entity\Categorie;
+use App\Entity\Livre;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class LivresType extends AbstractType
+class LivreType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -20,12 +20,12 @@ class LivresType extends AbstractType
             ->add('image')
             ->add('resume')
             ->add('editeur')
-            ->add('dateedition', null, [
+            ->add('dateEdition', null, [
                 'widget' => 'single_text'
             ])
             ->add('prix')
             ->add('categorie', EntityType::class, [
-                'class' => Categories::class,
+                'class' => Categorie::class,
 'choice_label' => 'id',
             ])
         ;
@@ -34,7 +34,7 @@ class LivresType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Livres::class,
+            'data_class' => Livre::class,
         ]);
     }
 }
