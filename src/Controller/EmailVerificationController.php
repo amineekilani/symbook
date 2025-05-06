@@ -25,7 +25,6 @@ class EmailVerificationController extends AbstractController
 
         $user = $userRepository->find($id);
         if (!$user) {
-            $this->addFlash('error', 'Utilisateur non trouvé.');
             return $this->redirectToRoute('app_register');
         }
 
@@ -33,7 +32,6 @@ class EmailVerificationController extends AbstractController
             $verifyEmailHelper->validateEmailConfirmationFromRequest($request, $user->getId(), $user->getEmail());
 
             if ($user->isVerified()) {
-                $this->addFlash('warning', 'Votre adresse email a déjà été vérifiée.');
                 return $this->redirectToRoute('app_login');
             }
 

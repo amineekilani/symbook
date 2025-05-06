@@ -47,7 +47,7 @@ class RegistrationController extends AbstractController
             $email = (new Email())
                 ->from('aminekilani901@gmail.com')
                 ->to($user->getEmail())
-                ->subject('Veuillez confirmer votre adresse email')
+                ->subject('SymBook - Vérification de votre adresse email')
                 ->html(sprintf(
                     '<h1>Bienvenue sur notre site !</h1>
                     <p>Pour confirmer votre adresse email, veuillez cliquer sur le lien suivant :</p>
@@ -58,7 +58,6 @@ class RegistrationController extends AbstractController
 
             $mailer->send($email);
 
-            $this->addFlash('success', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez vérifier votre boîte de réception.');
             return $this->redirectToRoute('app_login');
         }
 
