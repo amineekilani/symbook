@@ -3,8 +3,8 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
-use App\Entity\Livres;
-use App\Entity\Categories;
+use App\Entity\Livre;
+use App\Entity\Categorie;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
@@ -15,7 +15,7 @@ class LivresFixtures extends Fixture
         for($j=1; $j<=5; $j++)
         {
             $faker=Factory::create('fr_FR');
-            $cat=new Categories();
+            $cat=new Categorie();
             $names=['Roman', 'Science Fiction', 'Fantasy', 'Horreur', 'Policier'];
             $cat->setLibelle($names[$j-1]);
             $slug=str_replace(' ', '-', $cat->getLibelle());
@@ -28,7 +28,7 @@ class LivresFixtures extends Fixture
             $manager->persist($cat);
             for($i=1; $i<=100; $i++)
             { 
-                $livre=new Livres();
+                $livre=new Livre();
                 $titre=$faker->name;
                 $slug=str_replace(' ', '-', $titre);
                 $slug=strtolower($slug);

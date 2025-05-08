@@ -4,20 +4,34 @@ namespace App\Controller;
 
 use App\Entity\Categorie;
 use App\Form\CategorieType;
+use App\Repository\LivreRepository;
 use App\Repository\CategorieRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/admin/categorie')]
 final class CategorieController extends AbstractController{
     #[Route(name: 'app_categorie_index', methods: ['GET'])]
-    public function index(CategorieRepository $categorieRepository): Response
+    public function index(CategorieRepository $categorieRepository, LivreRepository $livreRepository): Response
     {
+        $categories = $categorieRepository->findAll();
+        $livres = $livreRepository->findAll();
+
+        // Logique pour trouver la catégorie la plus populaire
+        $categoriePopulaire = null;
+        if (!empty($categories)) {
+            $categoriePopulaire = array_reduce($categories, function ($carry, $item) {
+                return ($carry === null || count($item->getLivres()) > count($carry->getLivres())) ? $item : $carry;
+            });
+        }
+
         return $this->render('categorie/index.html.twig', [
-            'categories' => $categorieRepository->findAll(),
+            'categories' => $categories,
+            'livres' => $livres,
+            'categoriePopulaire' => $categoriePopulaire,
         ]);
     }
 
