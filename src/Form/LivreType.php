@@ -16,7 +16,6 @@ class LivreType extends AbstractType
         $builder
             ->add('titre')
             ->add('isbn')
-            ->add('slug')
             ->add('image')
             ->add('resume')
             ->add('editeur')
@@ -26,7 +25,8 @@ class LivreType extends AbstractType
             ->add('prix')
             ->add('categorie', EntityType::class, [
                 'class' => Categorie::class,
-'choice_label' => 'id',
+                'placeholder' => 'Sélectionner une catégorie',
+                'choice_label' => 'libelle',
             ])
         ;
     }

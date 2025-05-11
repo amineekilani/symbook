@@ -36,13 +36,6 @@
                         <div class="text-red-500 text-sm mt-1">{{ form_errors(form.isbn) }}</div>
                     </div>
                     
-                    <!-- Slug -->
-                    <div>
-                        {{ form_label(form.slug, 'Slug (URL)', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                        {{ form_widget(form.slug, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-                        <div class="text-red-500 text-sm mt-1">{{ form_errors(form.slug) }}</div>
-                    </div>
-                    
                     <!-- Image -->
                     <div>
                         {{ form_label(form.image, 'Image', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
