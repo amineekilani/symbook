@@ -12,10 +12,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route('/admin/livre')]
 final class LivreController extends AbstractController
 {
+    private $httpClient;
+
+    public function __construct(HttpClientInterface $httpClient)
+    {
+        $this->httpClient = $httpClient;
+    }
+
     #[Route(name: 'app_livre_index', methods: ['GET'])]
     public function index(Request $request, LivreRepository $livreRepository, PaginatorInterface $paginator): Response
     {
@@ -37,6 +45,41 @@ final class LivreController extends AbstractController
         ]);
     }
 
+    /**
+     * Génère un résumé via API IA en utilisant le titre et l'éditeur
+     */
+    private function generateSummary(string $titre, string $editeur): string
+    {
+        try
+        {
+            $response=$this->httpClient->request('POST', 'https://openrouter.ai/api/v1/chat/completions', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . ($_ENV['AI_API_KEY'] ?? 'your-api-key-here'),
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'model' => 'deepseek/deepseek-r1',
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => "Générez un résumé court pour un livre intitulé '$titre' publié par '$editeur'."
+                    ]
+                ]
+            ],
+        ]);
+        $data=$response->toArray();
+        if (isset($data['choices'][0]['message']['content']))
+        {
+            return $data['choices'][0]['message']['content'];
+        }
+        return 'Impossible de générer un résumé automatiquement.';
+        }
+        catch (\Exception $e)
+        {
+            return 'Impossible de générer un résumé automatiquement: ' . $e->getMessage();
+        }
+    }
+
     #[Route('/new', name: 'app_livre_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
@@ -48,7 +91,8 @@ final class LivreController extends AbstractController
             // Génération du slug à partir du titre
             $slug = $slugger->slug(strtolower($livre->getTitre()))->toString();
             $livre->setSlug($slug);
-
+            $resume=$this->generateSummary($livre->getTitre(), $livre->getEditeur());
+            $livre->setResume($resume);
             $entityManager->persist($livre);
             $entityManager->flush();
 
@@ -75,10 +119,12 @@ final class LivreController extends AbstractController
         $form = $this->createForm(LivreType::class, $livre);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Génération du slug à partir du titre
+        if ($form->isSubmitted() && $form->isValid())
+        {
             $slug = $slugger->slug(strtolower($livre->getTitre()))->toString();
             $livre->setSlug($slug);
+            $resume=$this->generateSummary($livre->getTitre(), $livre->getEditeur());
+            $livre->setResume($resume);
 
             $entityManager->flush();
 
