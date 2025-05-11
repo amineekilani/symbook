@@ -40,7 +40,7 @@ final class LivreController extends AbstractController
             $limit
         );
 
-        return $this->render('livre/index.html.twig', [
+        return $this->render('admin/livre/index.html.twig', [
             'livres' => $pagination,
         ]);
     }
@@ -99,7 +99,7 @@ final class LivreController extends AbstractController
             return $this->redirectToRoute('app_livre_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('livre/new.html.twig', [
+        return $this->render('admin/livre/new.html.twig', [
             'livre' => $livre,
             'form' => $form,
         ]);
@@ -108,7 +108,7 @@ final class LivreController extends AbstractController
     #[Route('/{id}', name: 'app_livre_show', methods: ['GET'])]
     public function show(Livre $livre): Response
     {
-        return $this->render('livre/show.html.twig', [
+        return $this->render('admin/livre/show.html.twig', [
             'livre' => $livre,
         ]);
     }
@@ -131,7 +131,7 @@ final class LivreController extends AbstractController
             return $this->redirectToRoute('app_livre_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('livre/edit.html.twig', [
+        return $this->render('admin/livre/edit.html.twig', [
             'livre' => $livre,
             'form' => $form,
         ]);
