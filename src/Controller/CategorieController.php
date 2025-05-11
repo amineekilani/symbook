@@ -7,6 +7,7 @@ use App\Form\CategorieType;
 use App\Repository\LivreRepository;
 use App\Repository\CategorieRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,10 +16,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/admin/categorie')]
 final class CategorieController extends AbstractController{
     #[Route(name: 'app_categorie_index', methods: ['GET'])]
-    public function index(CategorieRepository $categorieRepository, LivreRepository $livreRepository): Response
+    public function index(Request $request, CategorieRepository $categorieRepository, LivreRepository $livreRepository, PaginatorInterface $paginator): Response
     {
         $categories = $categorieRepository->findAll();
         $livres = $livreRepository->findAll();
+
+        $page = $request->query->getInt('page', 1);
+        $limit = 5;
+
+        $query = $categorieRepository->createQueryBuilder('l')
+            ->orderBy('l.id', 'DESC')
+            ->getQuery();
+
+        $pagination = $paginator->paginate(
+            $query,
+            $page,
+            $limit
+        );
 
         // Logique pour trouver la catégorie la plus populaire
         $categoriePopulaire = null;
@@ -29,7 +43,9 @@ final class CategorieController extends AbstractController{
         }
 
         return $this->render('admin/categorie/index.html.twig', [
-            'categories' => $categories,
+
+            'categories' => $pagination,
+            'categoriesTotal' => $categories,
             'livres' => $livres,
             'categoriePopulaire' => $categoriePopulaire,
         ]);

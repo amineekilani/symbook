@@ -25,7 +25,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-500">Total Catégories</p>
-                        <p class="text-2xl font-semibold text-gray-800">{{ categories|length }}</p>
+                        <p class="text-2xl font-semibold text-gray-800">{{ categoriesTotal|length }}</p>
                     </div>
                 </div>
             </div>
@@ -114,6 +114,47 @@
                 </table>
             </div>
         </div>
+        <!-- Pagination -->
+			{% if livres|length > 0 %}
+				<div class="mt-6 flex items-center justify-between">
+					<div class="text-sm text-gray-500">
+						Affichage de
+						<span class="font-medium">{{ (categories.currentPageNumber - 1) * categories.itemNumberPerPage + 1 }}</span>
+						à
+						<span class="font-medium">{{ min(categories.currentPageNumber * categories.itemNumberPerPage, categories.totalItemCount) }}</span>
+						sur
+						<span class="font-medium">{{ categories.totalItemCount }}</span>
+						catégories
+					</div>
+					<div class="flex space-x-2">
+						{% if categories.currentPageNumber > 1 %}
+							<a href="{{ path('app_categorie_index', {'page': categories.currentPageNumber - 1}) }}" class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors">
+								Précédent
+							</a>
+						{% else %}
+							<button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50" disabled>
+								Précédent
+							</button>
+						{% endif %}
+
+						{% for page in categories.paginationData.pagesInRange %}
+							<a href="{{ path('app_categorie_index', {'page': page}) }}" class="px-3 py-1 rounded border {% if page == categories.currentPageNumber %}bg-blue-600 text-white border-blue-600{% else %}border-gray-300 bg-white text-gray-700 hover:bg-gray-50{% endif %} transition-colors">
+								{{ page }}
+							</a>
+						{% endfor %}
+
+						{% if categories.currentPageNumber < categories.pageCount %}
+							<a href="{{ path('app_categorie_index', {'page': categories.currentPageNumber + 1}) }}" class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors">
+								Suivant
+							</a>
+						{% else %}
+							<button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50" disabled>
+								Suivant
+							</button>
+						{% endif %}
+					</div>
+				</div>
+			{% endif %}
     </div>
 </div>
 {% endblock %}
