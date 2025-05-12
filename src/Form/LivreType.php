@@ -2,12 +2,13 @@
 
 namespace App\Form;
 
-use App\Entity\Categorie;
 use App\Entity\Livre;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Categorie;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class LivreType extends AbstractType
 {
@@ -16,9 +17,15 @@ class LivreType extends AbstractType
         $builder
             ->add('titre')
             ->add('isbn')
-            ->add('slug')
-            ->add('image')
-            ->add('resume')
+            ->add('logoFile', FileType::class, [
+                'label' => 'Logo de l\'équipe',
+                'required' => false,
+                'mapped' => false,
+                'attr' => [
+                    'class' => 'hidden',
+                    'onchange' => 'previewLogo(this)'
+                ]
+            ])
             ->add('editeur')
             ->add('dateEdition', null, [
                 'widget' => 'single_text'
@@ -26,7 +33,8 @@ class LivreType extends AbstractType
             ->add('prix')
             ->add('categorie', EntityType::class, [
                 'class' => Categorie::class,
-'choice_label' => 'id',
+                'placeholder' => 'Sélectionner une catégorie',
+                'choice_label' => 'libelle',
             ])
         ;
     }

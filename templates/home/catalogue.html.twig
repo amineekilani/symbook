@@ -112,7 +112,11 @@
                 <div class="book-card bg-white rounded-lg overflow-hidden">
                     <div class="relative">
                         {% if livre.image %}
+<<<<<<< HEAD
                             <img src="{{ asset('uploads/images/' ~ livre.image) }}" alt="{{ livre.titre }}" class="book-image w-full">
+=======
+                            <img src="{{ asset('uploads/' ~ livre.image) }}" alt="{{ livre.titre }}" class="book-image w-full">
+>>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
                         {% else %}
                             <img src="{{ asset('images/default-book.jpg') }}" alt="{{ livre.titre }}" class="book-image w-full">
                         {% endif %}
@@ -142,7 +146,12 @@
         <div class="pagination mt-12">
             <a href="#">&laquo;</a>
             <a href="#" class="active">1</a>
+<<<<<<< HEAD
 
+=======
+            <a href="#">2</a>
+            <a href="#">3</a>
+>>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
             <a href="#">&raquo;</a>
         </div>
     {% else %}
@@ -153,8 +162,11 @@
             <p class="mt-4 text-gray-600">Essayez de modifier vos critères de recherche ou <a href="{{ path('home_catalogue') }}" class="text-indigo-600 hover:underline">réinitialiser les filtres</a>.</p>
         </div>
     {% endif %}
+<<<<<<< HEAD
     <a href="{{ path('home_cart') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition duration-300">Voir le Panier</a>
 
+=======
+>>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
 </div>
 
 <script>

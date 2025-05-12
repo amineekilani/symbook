@@ -1,8 +1,49 @@
+<<<<<<< HEAD
 {% extends 'base.html.twig' %}
 
 {% block title %}Détails du Livre{% endblock %}
 
 {% block body %}
+=======
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SymBook | Admin{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s;
+        }
+        .sidebar-collapsed {
+            width: 70px;
+        }
+        .sidebar-collapsed .nav-text {
+            display: none;
+        }
+        .sidebar-collapsed .logo-text {
+            display: none;
+        }
+        .content {
+            transition: all 0.3s;
+        }
+        .content-expanded {
+            margin-left: 70px;
+        }
+        .active-nav {
+            background-color: #3b82f6;
+            color: white !important;
+        }
+        .active-nav svg {
+            color: white !important;
+        }
+    </style>
+</head>
+
+<body>
+>>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
     <div class="container mx-auto px-4 py-8">
         <!-- Hero Section -->
         <div class="text-center mb-12">
@@ -42,4 +83,9 @@
             </a>
         </div>
     </div>
+<<<<<<< HEAD
 {% endblock %}
+=======
+</body>
+</html>
+>>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923

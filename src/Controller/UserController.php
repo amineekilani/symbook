@@ -11,9 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+<<<<<<< HEAD
 #[Route('/user')]
 final class UserController extends AbstractController
 {
+=======
+#[Route('admin/user')]
+final class UserController extends AbstractController{
+>>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {

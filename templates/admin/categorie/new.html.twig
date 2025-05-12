@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Catégorie{% endblock %}
+
+{% block body %}
+<div id="content" class="content content-expanded flex-1 overflow-auto ml-64">
+    <div class="p-6 md:p-8">
+        <!-- Breadcrumbs and Header -->
+        <div class="mb-8">
+            <nav class="flex mb-4" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                    <li class="inline-flex items-center">
+                        <a href="{{ path('app_dashboard') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                            <i class="fas fa-home mr-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                            <a href="{{ path('app_categorie_index') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 transition-colors">Catégories</a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Nouvelle</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+            
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Créer une nouvelle catégorie</h1>
+                    <p class="text-gray-600 mt-1">Ajoutez une nouvelle catégorie pour organiser vos livres</p>
+                </div>
+                <a href="{{ path('app_categorie_index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                {{ form_start(form, {'attr': {'class': 'space-y-6', 'id': 'categorie-form'}}) }}
+
+                <!-- Libelle Field -->
+                <div>
+                    {{ form_label(form.libelle, 'Libellé', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.libelle, {'attr': {
+                        'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+                        'placeholder': 'Ex: Roman, Science-Fiction, etc.'
+                    }}) }}
+                    <div class="text-red-500 text-xs mt-1">{{ form_errors(form.libelle) }}</div>
+                </div>
+
+                <!-- Description Field -->
+                <div>
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.description, {'attr': {
+                        'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+                        'placeholder': 'Décrivez cette catégorie',
+                        'rows': 3
+                    }}) }}
+                    <div class="text-red-500 text-xs mt-1">{{ form_errors(form.description) }}</div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end pt-6 border-t border-gray-200 mt-8">
+                    <button type="reset" class="mr-3 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <i class="fas fa-times mr-2"></i> Annuler
+                    </button>
+                    <button type="submit" id="submit-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <i class="fas fa-save mr-2"></i> 
+                        <span id="submit-text">Créer la catégorie</span>
+                        <span id="submit-spinner" class="hidden ml-2">
+                            <i class="fas fa-circle-notch fa-spin"></i>
+                        </span>
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form submission handling
+    const form = document.getElementById('categorie-form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            const submitButton = document.getElementById('submit-button');
+            const submitText = document.getElementById('submit-text');
+            const submitSpinner = document.getElementById('submit-spinner');
+            
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-75', 'cursor-not-allowed');
+            }
+            
+            if (submitText) {
+                submitText.textContent = 'Création en cours...';
+            }
+            
+            if (submitSpinner) {
+                submitSpinner.classList.remove('hidden');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
