@@ -11,6 +11,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/admin/categorie')]
@@ -52,13 +53,15 @@ final class CategorieController extends AbstractController{
     }
 
     #[Route('/new', name: 'app_categorie_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $categorie = new Categorie();
         $form = $this->createForm(CategorieType::class, $categorie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug=$slugger->slug(strtolower($categorie->getLibelle()))->toString();
+            $categorie->setSlug($slug);
             $entityManager->persist($categorie);
             $entityManager->flush();
 
