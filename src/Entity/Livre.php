@@ -49,6 +49,9 @@ class Livre
     #[ORM\ManyToOne(inversedBy: 'livres')]
     private ?Categorie $categorie = null;
 
+    #[ORM\Column]
+    private ?int $quantite = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -170,5 +173,17 @@ class Livre
     public function setLogoFile($logoFile): void
     {
         $this->logoFile = $logoFile;
+    }
+
+    public function getQuantite(): ?int
+    {
+        return $this->quantite;
+    }
+
+    public function setQuantite(int $quantite): static
+    {
+        $this->quantite = $quantite;
+
+        return $this;
     }
 }
