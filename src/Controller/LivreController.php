@@ -78,3 +78,29 @@ final class LivreController extends AbstractController{
         return $this->redirectToRoute('app_livre_index', [], Response::HTTP_SEE_OTHER);
     }
 }
+#[Route('/books')]
+class BookController extends AbstractController
+{
+    #[Route('/', name: 'book_index', methods: ['GET'])]
+    public function index(EntityManagerInterface $em, UserInterface $user = null): Response
+    {
+        // You can filter books by a specific user if your logic requires it.
+        // Example: $books = $em->getRepository(Book::class)->findByUser($user);
+
+        $books = $em->getRepository(Book::class)->findAll(); // Fetch all books for now
+
+        // Alternatively, you can add some user-specific filtering or additional logic
+        if ($user) {
+            // Optionally filter books based on user
+            // For example, if the user can only see books they purchased, you might filter
+            // $books = $em->getRepository(Book::class)->findByUser($user);
+        }
+
+        // Pass user information if needed in the view
+        return $this->render('book/index.html.twig', [
+            'books' => $books,
+            'user' => $user,  // Pass the logged-in user to the view
+        ]);
+    }
+}
+
