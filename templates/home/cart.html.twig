@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-{% extends 'base.html.twig' %}
-=======
->>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
 
 {% block title %}Panier d'Achat{% endblock %}
 
@@ -14,20 +10,6 @@
         {% else %}
             <div class="space-y-4">
                 {% for item in cart %}
-<<<<<<< HEAD
-                    <div class="flex justify-between items-center bg-white rounded-lg shadow-md p-4 mb-4 transition-transform transform hover:scale-105">
-                        <div>
-                            <h2 class="text-xl font-semibold text-gray-800">{{ item.title }}</h2>
-                            <p class="text-gray-600">Prix : {{ item.price }} €</p>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <div class="flex items-center">
-                                <label for="quantity" class="mr-2 text-gray-600">Quantité:</label>
-                                <input type="number" min="1" value="{{ item.quantity }}" class="border-2 p-2 rounded w-20 text-center" id="quantity-{{ item.id }}" onchange="updateQuantity({{ item.id }})">
-                            </div>
-                            <a href="{{ path('home_update_cart', {'id': item.id, 'quantity': 0}) }}" class="text-red-600 hover:underline">Supprimer</a>
-                        </div>
-=======
                     <div class="flex justify-between items-center bg-white rounded-lg shadow-md p-4 mb-4">
                         <div>
                             <h2 class="text-xl font-semibold">{{ item.title }}</h2>
@@ -38,26 +20,17 @@
                             <input type="number" min="1" value="{{ item.quantity }}" class="border-2 p-2 rounded" id="quantity-{{ item.id }}" onchange="updateQuantity({{ item.id }})">
                         </div>
                         <a href="{{ path('home_update_cart', {'id': item.id, 'quantity': item.quantity}) }}" class="text-red-600 hover:underline ml-4">Supprimer</a>
->>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
                     </div>
                 {% endfor %}
             </div>
 
             <div class="text-center mt-6">
-<<<<<<< HEAD
-                <a href="{{ path('home_catalogue') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition duration-300">Retour au Catalogue</a>
-=======
                 <a href="{{ path('home_catalogue') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full">Retour au Catalogue</a>
->>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
             </div>
         {% endif %}
     </div>
 
     <script>
-<<<<<<< HEAD
-        // Update cart quantity
-=======
->>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
         function updateQuantity(id) {
             let quantity = document.getElementById('quantity-' + id).value;
             window.location.href = '{{ path('home_update_cart', {'id': '__id__', 'quantity': '__quantity__'}) }}'.replace('__id__', id).replace('__quantity__', quantity);

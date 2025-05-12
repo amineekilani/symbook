@@ -48,8 +48,4 @@ class LivreRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
