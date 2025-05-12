@@ -1,5 +1,5 @@
 <?php
-
+// src/Repository/LivreRepository.php
 namespace App\Repository;
 
 use App\Entity\Livre;
@@ -16,28 +16,36 @@ class LivreRepository extends ServiceEntityRepository
         parent::__construct($registry, Livre::class);
     }
 
-//    /**
-//     * @return Livre[] Returns an array of Livre objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('l')
-//            ->andWhere('l.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('l.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Custom method to find books by filters (title, editeur, category)
+     * @return Livre[] Returns an array of Livre objects based on filters
+     */
+    public function findByFilters(?string $title, ?string $editeur, ?int $categoryId)
+    {
+        $qb = $this->createQueryBuilder('l');
 
-//    public function findOneBySomeField($value): ?Livre
-//    {
-//        return $this->createQueryBuilder('l')
-//            ->andWhere('l.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        // Filter by title
+        if ($title) {
+            $qb->andWhere('l.titre LIKE :title')
+                ->setParameter('title', '%' . $title . '%');
+        }
+
+        // Filter by editeur (publisher)
+        if ($editeur) {
+            $qb->andWhere('l.editeur LIKE :editeur')
+                ->setParameter('editeur', '%' . $editeur . '%');
+        }
+
+        // Filter by category if a categoryId is provided
+        if ($categoryId) {
+            $qb->leftJoin('l.categorie', 'c')
+                ->andWhere('c.id = :categoryId')
+                ->setParameter('categoryId', $categoryId);
+        }
+
+        // Order by title or other criteria if needed
+        $qb->orderBy('l.titre', 'ASC'); // Default ordering by title
+
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -1,0 +1,39 @@
+
+{% block title %}Panier d'Achat{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4 text-center">Votre Panier</h1>
+
+        {% if cart is empty %}
+            <p class="text-center text-gray-600">Votre panier est vide.</p>
+        {% else %}
+            <div class="space-y-4">
+                {% for item in cart %}
+                    <div class="flex justify-between items-center bg-white rounded-lg shadow-md p-4 mb-4">
+                        <div>
+                            <h2 class="text-xl font-semibold">{{ item.title }}</h2>
+                            <p class="text-gray-600">Prix : {{ item.price }} €</p>
+                        </div>
+                        <div class="flex items-center">
+                            <label for="quantity" class="mr-2">Quantité:</label>
+                            <input type="number" min="1" value="{{ item.quantity }}" class="border-2 p-2 rounded" id="quantity-{{ item.id }}" onchange="updateQuantity({{ item.id }})">
+                        </div>
+                        <a href="{{ path('home_update_cart', {'id': item.id, 'quantity': item.quantity}) }}" class="text-red-600 hover:underline ml-4">Supprimer</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="text-center mt-6">
+                <a href="{{ path('home_catalogue') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full">Retour au Catalogue</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function updateQuantity(id) {
+            let quantity = document.getElementById('quantity-' + id).value;
+            window.location.href = '{{ path('home_update_cart', {'id': '__id__', 'quantity': '__quantity__'}) }}'.replace('__id__', id).replace('__quantity__', quantity);
+        }
+    </script>
+{% endblock %}

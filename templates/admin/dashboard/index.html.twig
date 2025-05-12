@@ -76,7 +76,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
+                        <a href="{{ path('app_user_index') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
                             <i class="fas fa-users w-6 text-center"></i>
                             <span class="nav-text ml-3">Utilisateurs</span>
                         </a>
@@ -97,27 +97,6 @@
             <header class="bg-white shadow-sm py-4 px-6 flex items-center justify-between">
                 <div class="flex items-center">
                     <h1 class="text-xl font-semibold text-gray-800">Tableau de Bord</h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <button class="p-2 rounded-full hover:bg-gray-200">
-                            <i class="fas fa-bell text-gray-600"></i>
-                            <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-                        </button>
-                    </div>
-                    <div class="dropdown relative">
-                        <button class="flex items-center space-x-2 focus:outline-none">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="w-8 h-8 rounded-full">
-                            <span class="hidden md:inline-block">Admin</span>
-                            <i class="fas fa-chevron-down text-xs"></i>
-                        </button>
-                        <div class="dropdown-menu absolute hidden right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Paramètres</a>
-                            <div class="border-t border-gray-200"></div>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Déconnexion</a>
-                        </div>
-                    </div>
                 </div>
             </header>
 

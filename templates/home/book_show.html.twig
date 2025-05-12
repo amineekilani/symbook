@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SymBook | Admin{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s;
+        }
+        .sidebar-collapsed {
+            width: 70px;
+        }
+        .sidebar-collapsed .nav-text {
+            display: none;
+        }
+        .sidebar-collapsed .logo-text {
+            display: none;
+        }
+        .content {
+            transition: all 0.3s;
+        }
+        .content-expanded {
+            margin-left: 70px;
+        }
+        .active-nav {
+            background-color: #3b82f6;
+            color: white !important;
+        }
+        .active-nav svg {
+            color: white !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h1 class="title-font text-4xl md:text-5xl font-bold text-gray-800 mb-4">{{ livre.titre }}</h1>
+            <p class="text-lg text-gray-600">{{ livre.editeur }}</p>
+        </div>
+
+        <!-- Book Details Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Book Image -->
+            <div class="relative">
+                <img src="{{ asset('uploads/images/' ~ livre.image) }}" alt="{{ livre.titre }}" class="w-full h-80 object-cover rounded-lg shadow-lg">
+            </div>
+
+            <!-- Book Information -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-semibold text-gray-800">Informations:</h3>
+                <ul class="text-gray-600 space-y-2">
+                    <li><strong class="font-medium">ISBN:</strong> {{ livre.isbn }}</li>
+                    <li><strong class="font-medium">Éditeur:</strong> {{ livre.editeur }}</li>
+                    <li><strong class="font-medium">Date de publication:</strong> {{ livre.dateEdition ? livre.dateEdition|date('d/m/Y') : 'Non spécifiée' }}</li>
+                    <li><strong class="font-medium">Prix:</strong> {{ livre.prix }} €</li>
+                    <li><strong class="font-medium">Description:</strong> {{ livre.resume }}</li>
+                </ul>
+                <div class="flex space-x-4">
+                    <a href="{{ path('home_add_to_cart', {'id': livre.id}) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition duration-300 flex items-center justify-center">
+                        <i class="fas fa-cart-plus mr-2"></i> Ajouter au panier
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Return to Catalogue Button -->
+        <div class="mt-12 text-center">
+            <a href="{{ path('home_catalogue') }}" class="text-indigo-600 hover:underline text-lg font-medium">
+                <i class="fas fa-arrow-left mr-2"></i> Retour au Catalogue
+            </a>
+        </div>
+    </div>
+</body>
+</html>
