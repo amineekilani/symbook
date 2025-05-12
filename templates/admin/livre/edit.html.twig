@@ -1,109 +1,185 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier Livre
-{% endblock %}
+{% block title %}Modifier Livre{% endblock %}
 
 {% block body %}
-<div id="content" class="content content-expanded flex-1 overflow-auto">
-	<div
-		class="p-8">
-		<!-- Header with title and back button -->
-		<div class="flex justify-between items-center mb-8">
-			<div>
-				<h1 class="text-2xl font-bold text-gray-800">Modifier le livre</h1>
-				<p class="text-gray-600">Mettez à jour les détails du livre ci-dessous</p>
-			</div>
-			<a href="{{ path('app_livre_index') }}" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-				<i class="fas fa-arrow-left mr-2"></i>
-				Retour à la liste
-			</a>
-		</div>
+<div id="content" class="content content-expanded flex-1 overflow-auto ml-64">
+    <div class="p-6 md:p-8">
+        <!-- Breadcrumbs and Header -->
+        <div class="mb-8">
+            <nav class="flex mb-4" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                    <li class="inline-flex items-center">
+                        <a href="{{ path('app_dashboard') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                            <i class="fas fa-home mr-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                            <a href="{{ path('app_livre_index') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 transition-colors">Livres</a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Modifier</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+            
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Modifier le livre</h1>
+                    <p class="text-gray-600 mt-1">Mettez à jour les informations du livre</p>
+                </div>
+                <a href="{{ path('app_livre_index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </div>
 
-		<!-- Form Card -->
-		<div class="bg-white shadow rounded-lg overflow-hidden">
-			<div class="p-6">
-				{{ form_start(form, {'attr': {'class': 'space-y-6', 'id': 'livre-form'}}) }}
+        <!-- Form Card -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                {{ form_start(form, {'attr': {'class': 'space-y-6', 'id': 'livre-form'}}) }}
 
-				<div
-					class="grid grid-cols-1 md:grid-cols-2 gap-6">
-					<!-- Titre -->
-					<div>
-						{{ form_label(form.titre, 'Titre du livre', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-						{{ form_widget(form.titre, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-						<div class="text-red-500 text-sm mt-1">{{ form_errors(form.titre) }}</div>
-					</div>
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <!-- Left Column -->
+                    <div class="space-y-4">
+                        <!-- Titre -->
+                        <div>
+                            {{ form_label(form.titre, 'Titre du livre', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            {{ form_widget(form.titre, {'attr': {
+                                'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+                                'placeholder': 'Ex: Le Petit Prince'
+                            }}) }}
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.titre) }}</div>
+                        </div>
 
-					<!-- ISBN -->
-					<div>
-						{{ form_label(form.isbn, 'ISBN', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-						{{ form_widget(form.isbn, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-						<div class="text-red-500 text-sm mt-1">{{ form_errors(form.isbn) }}</div>
-					</div>
+                        <!-- ISBN -->
+                        <div>
+                            <div class="flex items-center">
+                                {{ form_label(form.isbn, 'ISBN', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                                <span class="ml-1 inline-flex items-center justify-center h-4 w-4 rounded-full bg-gray-200 text-gray-600 text-xs cursor-help" title="International Standard Book Number (10 ou 13 chiffres)">?</span>
+                            </div>
+                            {{ form_widget(form.isbn, {'attr': {
+                                'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+                                'placeholder': 'Ex: 9782070612758'
+                            }}) }}
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.isbn) }}</div>
+                        </div>
 
-					<!-- Image -->
-					<div>
-						{{ form_label(form.image, 'Image', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-						{{ form_widget(form.image, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-						<div class="text-red-500 text-sm mt-1">{{ form_errors(form.image) }}</div>
-					</div>
-
-					<!-- Éditeur -->
-					<div>
-						{{ form_label(form.editeur, 'Éditeur', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-						{{ form_widget(form.editeur, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-						<div class="text-red-500 text-sm mt-1">{{ form_errors(form.editeur) }}</div>
-					</div>
-
-					<!-- Date d'édition -->
-					<div>
-						{{ form_label(form.dateEdition, 'Date d\'édition', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                        {{ form_widget(form.dateEdition, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-                        <div class="text-red-500 text-sm mt-1">{{ form_errors(form.dateEdition) }}</div>
-                    </div>
-                    
-                    <!-- Prix -->
-                    <div>
-                        {{ form_label(form.prix, 'Prix (€)', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                        <div class="relative rounded-md shadow-sm">
-                            {{ form_widget(form.prix, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 pl-7'}}) }}
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500">€</span>
+                        <!-- Current Image -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Image actuelle</label>
+                            <div class="mt-1">
+                                {% if livre.image %}
+                                    <img src="{{ asset('uploads/' ~ livre.image) }}" alt="Couverture actuelle" class="h-40 object-contain border rounded-md">
+                                {% else %}
+                                    <div class="h-40 flex items-center justify-center bg-gray-100 rounded-md text-gray-400">
+                                        <i class="fas fa-image fa-2x"></i>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
-                        <div class="text-red-500 text-sm mt-1">{{ form_errors(form.prix) }}</div>
                     </div>
-                    
-                    <!-- Catégorie -->
-                    <div>
-                        {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                        {{ form_widget(form.categorie, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-                        <div class="text-red-500 text-sm mt-1">{{ form_errors(form.categorie) }}</div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-4">
+                        <!-- New Image Upload -->
+                        <div>
+                            {{ form_label(form.logoFile, 'Nouvelle image', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            <div class="mt-1 flex items-center">
+                                <div class="relative group">
+                                    <div class="w-32 h-40 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 group-hover:bg-gray-100 group-hover:border-blue-300 transition-colors cursor-pointer overflow-hidden">
+                                        <div id="new-image-preview-container" class="w-full h-full flex flex-col items-center justify-center text-center p-2">
+                                            <i class="fas fa-upload text-blue-500 text-2xl mb-2"></i>
+                                            <span class="text-xs text-gray-500">Télécharger</span>
+                                            <span class="text-xs text-gray-400">(JPEG, PNG - Max 2MB)</span>
+                                        </div>
+                                        <img id="new-image-preview" class="absolute inset-0 w-full h-full object-contain hidden" alt="Aperçu de la nouvelle image">
+                                    </div>
+                                    {{ form_widget(form.logoFile, {'attr': {
+                                        'class': 'absolute inset-0 w-full h-full opacity-0 cursor-pointer',
+                                        'accept': 'image/*'
+                                    }}) }}
+                                </div>
+                                <div class="ml-4 text-xs text-gray-500">
+                                    <p>La couverture doit être au format paysage</p>
+                                    <p>Dimensions recommandées : 300x450px</p>
+                                </div>
+                            </div>
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.logoFile) }}</div>
+                        </div>
+
+                        <!-- Éditeur -->
+                        <div>
+                            {{ form_label(form.editeur, 'Éditeur', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            {{ form_widget(form.editeur, {'attr': {
+                                'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+                                'placeholder': 'Ex: Gallimard'
+                            }}) }}
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.editeur) }}</div>
+                        </div>
+
+                        <!-- Prix -->
+                        <div>
+                            {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500">€</span>
+                                </div>
+                                {{ form_widget(form.prix, {'attr': {
+                                    'class': 'block w-full pl-7 pr-12 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+                                    'placeholder': '0.00'
+                                }}) }}
+                            </div>
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.prix) }}</div>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Action Buttons -->
-                <div class="flex justify-between mt-8">
-                    <!-- Delete Button -->
+
+                <!-- Date d'édition -->
+                <div class="mt-4">
+                    {{ form_label(form.dateEdition, 'Date d\'édition', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.dateEdition, {'attr': {
+                        'class': 'mt-1 block w-full md:w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    }}) }}
+                    <div class="text-red-500 text-xs mt-1">{{ form_errors(form.dateEdition) }}</div>
+                </div>
+
+                <!-- Catégorie -->
+                <div class="mt-4">
+                    {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.categorie, {'attr': {
+                        'class': 'mt-1 block w-full md:w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    }}) }}
+                    <div class="text-red-500 text-xs mt-1">{{ form_errors(form.categorie) }}</div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-between pt-6 border-t border-gray-200 mt-8">
                     <button type="button" onclick="confirmDelete()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
                         <i class="fas fa-trash mr-2"></i> Supprimer
                     </button>
                     
-                    <!-- Update Button -->
-                    <button type="submit" id="submit-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                        <i class="fas fa-save mr-2"></i> <span>Mettre à jour</span>
-                    </button>
-                </div>
-                
-                <!-- Loading Overlay - Hidden by default -->
-                <div id="loading-overlay" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
-                    <div class="bg-white p-5 rounded-lg flex flex-col items-center">
-                        <div class="spinner-border animate-spin inline-block w-12 h-12 border-4 rounded-full border-blue-600 border-t-transparent mb-3" role="status">
-                            <span class="sr-only">Chargement...</span>
-                        </div>
-                        <p class="text-gray-700">Mise à jour en cours...</p>
+                    <div class="space-x-3">
+                        <button type="reset" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            <i class="fas fa-times mr-2"></i> Annuler
+                        </button>
+                        <button type="submit" id="submit-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            <i class="fas fa-save mr-2"></i> 
+                            <span id="submit-text">Mettre à jour</span>
+                            <span id="submit-spinner" class="hidden ml-2">
+                                <i class="fas fa-circle-notch fa-spin"></i>
+                            </span>
+                        </button>
                     </div>
                 </div>
-                
                 {{ form_end(form) }}
             </div>
         </div>
@@ -111,7 +187,7 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+<div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
@@ -126,7 +202,7 @@
                     <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-800 text-sm font-medium rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         Annuler
                     </button>
-                    {{ include('livre/_delete_form.html.twig') }}
+                    {{ include('admin/livre/_delete_form.html.twig') }}
                 </div>
             </div>
         </div>
@@ -134,52 +210,118 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('livre-form');
-        const loadingOverlay = document.getElementById('loading-overlay');
-        const submitButton = document.getElementById('submit-button');
+document.addEventListener('DOMContentLoaded', function() {
+    // Image preview functionality
+    const imageInput = document.getElementById('{{ form.logoFile.vars.id }}');
+    const imagePreview = document.getElementById('new-image-preview');
+    const imagePreviewContainer = document.getElementById('new-image-preview-container');
+    
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    if (!imagePreview) {
+                        const newPreview = document.createElement('img');
+                        newPreview.id = 'new-image-preview';
+                        newPreview.className = 'absolute inset-0 w-full h-full object-contain';
+                        newPreview.src = e.target.result;
+                        imagePreviewContainer.parentNode.appendChild(newPreview);
+                    } else {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('hidden');
+                    }
+                    imagePreviewContainer.classList.add('hidden');
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Drag and drop functionality
+        const dropArea = imagePreviewContainer.parentNode;
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
 
-        // Animation au moment de la soumission du formulaire
-        form.addEventListener('submit', function(event) {
-            // Ne pas afficher l'animation si on clique sur le bouton supprimer
-            if (event.submitter && event.submitter.type === 'button') {
-                return;
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropArea.classList.add('border-blue-500', 'bg-blue-50');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('border-blue-500', 'bg-blue-50');
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            imageInput.files = files;
+            
+            // Trigger the change event manually
+            const event = new Event('change');
+            imageInput.dispatchEvent(event);
+        }
+    }
+    
+    // Form submission handling
+    const form = document.getElementById('livre-form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            const submitButton = document.getElementById('submit-button');
+            const submitText = document.getElementById('submit-text');
+            const submitSpinner = document.getElementById('submit-spinner');
+            
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-75', 'cursor-not-allowed');
             }
             
-            // Afficher l'animation de chargement
-            loadingOverlay.classList.remove('hidden');
+            if (submitText) {
+                submitText.textContent = 'Mise à jour...';
+            }
             
-            // Désactiver le bouton pour éviter les soumissions multiples
-            submitButton.disabled = true;
-            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-            submitButton.querySelector('span').textContent = 'Mise à jour en cours...';
+            if (submitSpinner) {
+                submitSpinner.classList.remove('hidden');
+            }
         });
-    });
-
-    function confirmDelete() {
-        document.getElementById('deleteModal').classList.remove('hidden');
     }
-
-    function closeModal() {
-        document.getElementById('deleteModal').classList.add('hidden');
+    
+    // Price input formatting
+    const priceInput = document.getElementById('{{ form.prix.vars.id }}');
+    if (priceInput) {
+        priceInput.addEventListener('blur', function() {
+            const value = parseFloat(this.value);
+            if (!isNaN(value)) {
+                this.value = value.toFixed(2);
+            }
+        });
     }
+});
+
+function confirmDelete() {
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
 </script>
-
-<style>
-    /* Animation for modal */
-    .modal-enter {
-        opacity: 0;
-    }
-    .modal-enter-active {
-        opacity: 1;
-        transition: opacity 200ms;
-    }
-    .modal-exit {
-        opacity: 1;
-    }
-    .modal-exit-active {
-        opacity: 0;
-        transition: opacity 200ms;
-    }
-</style>
 {% endblock %}

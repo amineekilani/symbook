@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\LivreRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LivreRepository::class)]
 class Livre
@@ -23,8 +24,15 @@ class Livre
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    #[Assert\Image(
+        maxSize: '2M',
+        mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+        groups: ['upload']
+    )]
+    private $logoFile;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $resume = null;
@@ -152,5 +160,15 @@ class Livre
         $this->categorie = $categorie;
 
         return $this;
+    }
+
+    public function getLogoFile()
+    {
+        return $this->logoFile;
+    }
+
+    public function setLogoFile($logoFile): void
+    {
+        $this->logoFile = $logoFile;
     }
 }

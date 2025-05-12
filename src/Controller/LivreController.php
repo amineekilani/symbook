@@ -62,7 +62,7 @@ final class LivreController extends AbstractController
                 'messages' => [
                     [
                         'role' => 'user',
-                        'content' => "Générez un résumé court pour un livre intitulé '$titre' publié par '$editeur'."
+                        'content' => "Generate a short summary for a book titled '$titre' published by '$editeur'. In your response, do not include any titles or formatting—just start directly with plain text. The response must be in French"
                     ]
                 ]
             ],
@@ -87,12 +87,26 @@ final class LivreController extends AbstractController
         $form = $this->createForm(LivreType::class, $livre);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Génération du slug à partir du titre
+        if ($form->isSubmitted() && $form->isValid())
+        {
             $slug = $slugger->slug(strtolower($livre->getTitre()))->toString();
             $livre->setSlug($slug);
             $resume=$this->generateSummary($livre->getTitre(), $livre->getEditeur());
             $livre->setResume($resume);
+            /** @var UploadedFile $logoFile */
+            $logoFile = $form->get('logoFile')->getData();
+
+            if ($logoFile) {
+                $newFilename = uniqid().'.'.$logoFile->guessExtension();
+
+                // Déplacez le fichier dans le répertoire public/uploads
+                $logoFile->move(
+                    $this->getParameter('kernel.project_dir').'/public/uploads',
+                    $newFilename
+                );
+
+                $livre->setImage($newFilename);
+            }
             $entityManager->persist($livre);
             $entityManager->flush();
 
@@ -116,11 +130,32 @@ final class LivreController extends AbstractController
     #[Route('/{id}/edit', name: 'app_livre_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Livre $livre, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
+        $currentLogo = $livre->getImage();
         $form = $this->createForm(LivreType::class, $livre);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid())
         {
+            /** @var UploadedFile $logoFile */
+            $logoFile = $form->get('logoFile')->getData();
+
+            if ($logoFile) {
+                // Remove old logo if it exists
+                if ($currentLogo) {
+                    $oldLogoPath = $this->getParameter('kernel.project_dir').'/public/uploads/'.$currentLogo;
+                    if (file_exists($oldLogoPath)) {
+                        unlink($oldLogoPath);
+                    }
+                }
+
+                // Upload new logo
+                $newFilename = uniqid().'.'.$logoFile->guessExtension();
+                $logoFile->move(
+                    $this->getParameter('kernel.project_dir').'/public/uploads',
+                    $newFilename
+                );
+                $livre->setImage($newFilename);
+            }
             $slug = $slugger->slug(strtolower($livre->getTitre()))->toString();
             $livre->setSlug($slug);
             $resume=$this->generateSummary($livre->getTitre(), $livre->getEditeur());

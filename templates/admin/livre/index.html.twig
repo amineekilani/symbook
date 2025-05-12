@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Catalogue Livres
-{% endblock %}
+{% block title %}Catalogue Livres{% endblock %}
 
 {% block body %}
 	<div id="content" class="content content-expanded flex-1 overflow-auto">
@@ -50,7 +49,7 @@
 									<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{{ livre.isbn }}</td>
 									<td class="px-6 py-4 whitespace-nowrap">
 										{% if livre.image %}
-											<img src="{{ asset('uploads/images/' ~ livre.image) }}" alt="{{ livre.titre }}" class="h-12 w-9 object-cover rounded shadow-sm">
+											<img src="{{ asset('uploads/' ~ livre.image) }}" alt="{{ livre.titre }}" class="h-12 w-9 object-cover rounded shadow-sm">
 										{% else %}
 											<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
 												Sans image

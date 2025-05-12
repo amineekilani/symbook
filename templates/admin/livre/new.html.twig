@@ -1,126 +1,276 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau Livre
-{% endblock %}
+{% block title %}Nouveau Livre{% endblock %}
 
 {% block body %}
-<div id="content" class="content content-expanded flex-1 overflow-auto">
-	<div
-		class="p-8">
-		<!-- Header with title and back button -->
-		<div class="flex justify-between items-center mb-8">
-			<div>
-				<h1 class="text-2xl font-bold text-gray-800">Ajouter un nouveau livre</h1>
-				<p class="text-gray-600">Remplissez les détails du livre ci-dessous</p>
-			</div>
-			<a href="{{ path('app_livre_index') }}" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-				<i class="fas fa-arrow-left mr-2"></i>
-				Retour à la liste
-			</a>
-		</div>
-
-		<!-- Form Card -->
-		<div class="bg-white shadow rounded-lg overflow-hidden">
-			<div class="p-6">
-				{{ form_start(form, {'attr': {'class': 'space-y-6', 'id': 'livre-form'}}) }}
-
-				<div
-					class="grid grid-cols-1 md:grid-cols-2 gap-6">
-					<!-- Titre -->
-					<div>
-						{{ form_label(form.titre, 'Titre du livre', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-						{{ form_widget(form.titre, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-						<div class="text-red-500 text-sm mt-1">{{ form_errors(form.titre) }}</div>
-					</div>
-
-					<!-- ISBN -->
-					<div>
-						{{ form_label(form.isbn, 'ISBN', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-						{{ form_widget(form.isbn, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-						<div class="text-red-500 text-sm mt-1">{{ form_errors(form.isbn) }}</div>
-					</div>
-
-					<!-- Image -->
-					<div>
-						{{ form_label(form.image, 'Image', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-						{{ form_widget(form.image, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-						<div class="text-red-500 text-sm mt-1">{{ form_errors(form.image) }}</div>
-					</div>
-
-					<!-- Éditeur -->
-					<div>
-						{{ form_label(form.editeur, 'Éditeur', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-						{{ form_widget(form.editeur, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-						<div class="text-red-500 text-sm mt-1">{{ form_errors(form.editeur) }}</div>
-					</div>
-
-					<!-- Date d'édition -->
-					<div>
-						{{ form_label(form.dateEdition, 'Date d\'édition', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                        {{ form_widget(form.dateEdition, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-                        <div class="text-red-500 text-sm mt-1">{{ form_errors(form.dateEdition) }}</div>
-                    </div>
-                    
-                    <!-- Prix -->
-                    <div>
-                        {{ form_label(form.prix, 'Prix (€)', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                        <div class="relative rounded-md shadow-sm">
-                            {{ form_widget(form.prix, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 pl-7'}}) }}
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500">€</span>
-                            </div>
+<div id="content" class="content content-expanded flex-1 overflow-auto ml-64">
+    <div class="p-6 md:p-8">
+        <!-- Breadcrumbs and Header -->
+        <div class="mb-8">
+            <nav class="flex mb-4" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                    <li class="inline-flex items-center">
+                        <a href="{{ path('app_dashboard') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                            <i class="fas fa-home mr-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                            <a href="{{ path('app_livre_index') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 transition-colors">Livres</a>
                         </div>
-                        <div class="text-red-500 text-sm mt-1">{{ form_errors(form.prix) }}</div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Nouveau</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+            
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Ajouter un nouveau livre</h1>
+                    <p class="text-gray-600 mt-1">Remplissez les informations ci-dessous pour enrichir votre catalogue</p>
+                </div>
+                <a href="{{ path('app_livre_index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                {{ form_start(form, {'attr': {'class': 'space-y-6', 'id': 'livre-form'}}) }}
+
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <!-- Left Column -->
+                    <div class="space-y-4">
+                        <!-- Titre -->
+                        <div>
+                            {{ form_label(form.titre, 'Titre du livre', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            {{ form_widget(form.titre, {'attr': {
+                                'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+                                'placeholder': 'Ex: Le Petit Prince'
+                            }}) }}
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.titre) }}</div>
+                        </div>
+
+                        <!-- ISBN -->
+                        <div>
+                            <div class="flex items-center">
+                                {{ form_label(form.isbn, 'ISBN', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                                <span class="ml-1 inline-flex items-center justify-center h-4 w-4 rounded-full bg-gray-200 text-gray-600 text-xs cursor-help" title="International Standard Book Number (10 ou 13 chiffres)">?</span>
+                            </div>
+                            {{ form_widget(form.isbn, {'attr': {
+                                'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+                                'placeholder': 'Ex: 9782070612758'
+                            }}) }}
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.isbn) }}</div>
+                        </div>
+
+                        <!-- Éditeur -->
+                        <div>
+                            {{ form_label(form.editeur, 'Éditeur', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            {{ form_widget(form.editeur, {'attr': {
+                                'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+                                'placeholder': 'Ex: Gallimard'
+                            }}) }}
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.editeur) }}</div>
+                        </div>
                     </div>
-                    
-                    <!-- Catégorie -->
-                    <div>
-                        {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                        {{ form_widget(form.categorie, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'}}) }}
-                        <div class="text-red-500 text-sm mt-1">{{ form_errors(form.categorie) }}</div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-4">
+                        <!-- Image Upload -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Couverture du livre</label>
+                            <div class="mt-1 flex items-center">
+                                <div class="relative group">
+                                    <div class="w-32 h-40 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 group-hover:bg-gray-100 group-hover:border-blue-300 transition-colors cursor-pointer overflow-hidden">
+                                        <div id="logo-preview-container" class="w-full h-full flex flex-col items-center justify-center text-center p-2">
+                                            <i class="fas fa-book-open text-blue-500 text-2xl mb-2"></i>
+                                            <span class="text-xs text-gray-500">Télécharger</span>
+                                            <span class="text-xs text-gray-400">(JPEG, PNG - Max 2MB)</span>
+                                        </div>
+                                        <img id="logo-preview" class="absolute inset-0 w-full h-full object-contain hidden" alt="Aperçu de la couverture">
+                                    </div>
+                                    {{ form_widget(form.logoFile, {'attr': {
+                                        'class': 'absolute inset-0 w-full h-full opacity-0 cursor-pointer',
+                                        'accept': 'image/*'
+                                    }}) }}
+                                </div>
+                                <div class="ml-4 text-xs text-gray-500">
+                                    <p>La couverture doit être au format paysage</p>
+                                    <p>Dimensions recommandées : 300x450px</p>
+                                </div>
+                            </div>
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.logoFile) }}</div>
+                        </div>
+
+                        <!-- Prix -->
+                        <div>
+                            {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500">€</span>
+                                </div>
+                                {{ form_widget(form.prix, {'attr': {
+                                    'class': 'block w-full pl-7 pr-12 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+                                    'placeholder': '0.00'
+                                }}) }}
+                            </div>
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.prix) }}</div>
+                        </div>
+
+                        <!-- Catégorie -->
+                        <div>
+                            {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            {{ form_widget(form.categorie, {'attr': {
+                                'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                            }}) }}
+                            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.categorie) }}</div>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Submit Button and Loading Spinner -->
-                <div class="flex justify-end mt-8">
+
+                <!-- Date d'édition -->
+                <div class="mt-4">
+                    {{ form_label(form.dateEdition, 'Date d\'édition', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.dateEdition, {'attr': {
+                        'class': 'mt-1 block w-full md:w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    }}) }}
+                    <div class="text-red-500 text-xs mt-1">{{ form_errors(form.dateEdition) }}</div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end pt-6 border-t border-gray-200 mt-8">
+                    <button type="reset" href="{{ path('app_livre_index') }}" class="mr-3 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <i class="fas fa-times mr-2"></i> Annuler
+                    </button>
                     <button type="submit" id="submit-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                        <i class="fas fa-save mr-2"></i> <span>Enregistrer le livre</span>
+                        <i class="fas fa-save mr-2"></i> 
+                        <span id="submit-text">Enregistrer le livre</span>
+                        <span id="submit-spinner" class="hidden ml-2">
+                            <i class="fas fa-circle-notch fa-spin"></i>
+                        </span>
                     </button>
                 </div>
-
-                <!-- Loading Overlay - Hidden by default -->
-                <div id="loading-overlay" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
-                    <div class="bg-white p-5 rounded-lg flex flex-col items-center">
-                        <div class="spinner-border animate-spin inline-block w-12 h-12 border-4 rounded-full border-blue-600 border-t-transparent mb-3" role="status">
-                            <span class="sr-only">Chargement...</span>
-                        </div>
-                        <p class="text-gray-700">Ajout en cours...</p>
-                    </div>
-                </div>
-                
                 {{ form_end(form) }}
             </div>
         </div>
     </div>
 </div>
 
-{% block javascripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('livre-form');
-        const loadingOverlay = document.getElementById('loading-overlay');
-        const submitButton = document.getElementById('submit-button');
-
-        form.addEventListener('submit', function(event) {
-            // Afficher l'animation de chargement
-            loadingOverlay.classList.remove('hidden');
-            
-            // Désactiver le bouton pour éviter les soumissions multiples
-            submitButton.disabled = true;
-            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-            submitButton.querySelector('span').textContent = 'Enregistrement...';
+document.addEventListener('DOMContentLoaded', function() {
+    // Logo preview functionality
+    const logoInput = document.getElementById('{{ form.logoFile.vars.id }}');
+    const logoPreview = document.getElementById('logo-preview');
+    const logoPreviewContainer = document.getElementById('logo-preview-container');
+    
+    if (logoInput) {
+        logoInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    if (!logoPreview) {
+                        const newPreview = document.createElement('img');
+                        newPreview.id = 'logo-preview';
+                        newPreview.className = 'absolute inset-0 w-full h-full object-contain';
+                        newPreview.src = e.target.result;
+                        logoPreviewContainer.parentNode.appendChild(newPreview);
+                    } else {
+                        logoPreview.src = e.target.result;
+                        logoPreview.classList.remove('hidden');
+                    }
+                    logoPreviewContainer.classList.add('hidden');
+                }
+                
+                reader.readAsDataURL(file);
+            }
         });
-    });
+        
+        // Drag and drop functionality
+        const dropArea = logoPreviewContainer.parentNode;
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropArea.classList.add('border-blue-500', 'bg-blue-50');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('border-blue-500', 'bg-blue-50');
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            logoInput.files = files;
+            
+            // Trigger the change event manually
+            const event = new Event('change');
+            logoInput.dispatchEvent(event);
+        }
+    }
+    
+    // Form submission handling
+    const form = document.getElementById('livre-form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            const submitButton = document.getElementById('submit-button');
+            const submitText = document.getElementById('submit-text');
+            const submitSpinner = document.getElementById('submit-spinner');
+            
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-75', 'cursor-not-allowed');
+            }
+            
+            if (submitText) {
+                submitText.textContent = 'Enregistrement...';
+            }
+            
+            if (submitSpinner) {
+                submitSpinner.classList.remove('hidden');
+            }
+        });
+    }
+    
+    // Price input formatting
+    const priceInput = document.getElementById('{{ form.prix.vars.id }}');
+    if (priceInput) {
+        priceInput.addEventListener('blur', function() {
+            const value = parseFloat(this.value);
+            if (!isNaN(value)) {
+                this.value = value.toFixed(2);
+            }
+        });
+    }
+});
 </script>
-{% endblock %}
 {% endblock %}
