@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/home')]
+#[Route('/')]
 class HomeController extends AbstractController
 {
     // Route to view the book catalogue
@@ -37,16 +37,18 @@ class HomeController extends AbstractController
             'categories' => $categories,
             'title' => $title,
             'editeur' => $editeur,  // Pass 'editeur' instead of 'author'
-            'categoryId' => $categoryId
+            'categoryId' => $categoryId,
+            'cart' => $request->getSession()->get('cart', [])
         ]);
     }
 
     // Route to show a specific book's details
     #[Route('/book/{id}', name: 'home_book_show', methods: ['GET'])]
-    public function showBook(Livre $livre): Response
+    public function showBook(Livre $livre, Request $request): Response
     {
         return $this->render('home/book_show.html.twig', [
             'livre' => $livre,
+            'cart' => $request->getSession()->get('cart', [])
         ]);
     }
 
@@ -90,7 +92,7 @@ class HomeController extends AbstractController
         $this->addFlash('success', 'Le livre a été ajouté au panier.');
 
         // Redirect back to the catalogue page
-        return $this->redirectToRoute('home_catalogue');
+        return $this->redirectToRoute('home_cart');
     }
 
     // Route to view the current cart

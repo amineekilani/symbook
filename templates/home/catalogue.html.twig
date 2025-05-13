@@ -1,74 +1,8 @@
- <!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogue des Livres</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap');
+{% extends 'base.html.twig' %}
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
+{% block title %}Catalogue des Livres{% endblock %}
 
-        .book-card {
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .book-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .book-image {
-            height: 300px;
-            object-fit: cover;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .title-font {
-            font-family: 'Playfair Display', serif;
-        }
-
-        .search-box {
-            background-color: white;
-            border-radius: 50px;
-            padding: 8px 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        .pagination a {
-            color: #4a5568;
-            padding: 8px 16px;
-            text-decoration: none;
-            transition: background-color .3s;
-            border: 1px solid #ddd;
-            margin: 0 4px;
-            border-radius: 5px;
-        }
-
-        .pagination a.active {
-            background-color: #4f46e5;
-            color: white;
-            border: 1px solid #4f46e5;
-        }
-
-        .pagination a:hover:not(.active) {
-            background-color: #e2e8f0;
-        }
-    </style>
-</head>
-<body class="min-h-screen">
+{% block body %}
 <div class="container mx-auto px-4 py-8">
     <!-- Hero Section -->
     <div class="text-center mb-12">
@@ -155,32 +89,4 @@
         </div>
     {% endif %}
 </div>
-
-<script>
-    // Add some interactive elements
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add animation to book cards when they come into view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fadeIn');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.book-card').forEach(card => {
-            observer.observe(card);
-            card.style.opacity = '0';
-            card.classList.add('transition-opacity', 'duration-500');
-        });
-
-        // Small delay to allow for initial render
-        setTimeout(() => {
-            document.querySelectorAll('.book-card').forEach(card => {
-                card.style.opacity = '1';
-            });
-        }, 100);
-    });
-</script>
-</body>
-</html>
+{% endblock %}
