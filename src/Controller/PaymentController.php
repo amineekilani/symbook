@@ -74,13 +74,14 @@ class PaymentController extends AbstractController
         $total = $orderDetails['total'] ?? 0;
 
         // Obtenir l'utilisateur connecté
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
         // Envoyer l'email de confirmation si l'utilisateur est connecté
         if ($user) {
             $emailService->sendPaymentConfirmationEmail(
-                "amine.kilani@ieee.org",
-                'amClient',
+                $user->getEmail(),
+                $user->getNom() ?? 'Client',
                 $cart,
                 $total
             );
