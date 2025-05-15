@@ -54,7 +54,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         }
         if(in_array('ROLE_USER',$roles))
         {
-            return new RedirectResponse($this->urlGenerator->generate('app_etudiant_index'));
+            return new RedirectResponse($this->urlGenerator->generate('home_catalogue'));
         }
         // For example:
         throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
