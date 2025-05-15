@@ -1,136 +1,140 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Panier d'Achat{% endblock %}
+{% block title %}Panier d'Achat
+{% endblock %}
 
 {% block body %}
-<div class="container mx-auto px-4 py-8 mt-12">
-    <!-- Hero Section -->
-    <div class="text-center mb-12">
-        <h1 class="title-font text-4xl md:text-5xl font-bold text-gray-800 mb-4">Votre Panier</h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Revoyez et modifiez les articles de votre panier avant de passer commande</p>
-    </div>
+	<div
+		class="container mx-auto px-4 py-8 mt-12">
+		<!-- Hero Section -->
+		<div class="text-center mb-12">
+			<h1 class="title-font text-4xl md:text-5xl font-bold text-gray-800 mb-4">Votre Panier</h1>
+			<p class="text-lg text-gray-600 max-w-2xl mx-auto">Revoyez et modifiez les articles de votre panier avant de passer commande</p>
+		</div>
 
-    {% if cart is empty %}
-        <div class="text-center py-16">
-            <div class="inline-block bg-indigo-100 text-indigo-800 px-6 py-4 rounded-lg">
-                <i class="fas fa-shopping-cart mr-2"></i> Votre panier est vide
-            </div>
-            <p class="mt-4 text-gray-600">Commencez par <a href="{{ path('home_catalogue') }}" class="text-indigo-600 hover:underline">explorer notre catalogue</a> pour trouver des livres qui vous intéressent.</p>
-        </div>
-    {% else %}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Cart Items -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                    <!-- Cart Header -->
-                    <div class="bg-gray-50 px-6 py-4 border-b">
-                        <h2 class="title-font text-xl font-semibold text-gray-800">Articles dans votre panier</h2>
-                    </div>
+		{% if cart is empty %}
+			<div class="text-center py-16">
+				<div class="inline-block bg-indigo-100 text-indigo-800 px-6 py-4 rounded-lg">
+					<i class="fas fa-shopping-cart mr-2"></i>
+					Votre panier est vide
+				</div>
+				<p class="mt-4 text-gray-600">Commencez par
+					<a href="{{ path('home_catalogue') }}" class="text-indigo-600 hover:underline">explorer notre catalogue</a>
+					pour trouver des livres qui vous intéressent.</p>
+			</div>
+		{% else %}
+			<div
+				class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+				<!-- Cart Items -->
+				<div class="lg:col-span-2">
+					<div
+						class="bg-white rounded-xl shadow-md overflow-hidden">
+						<!-- Cart Header -->
+						<div class="bg-gray-50 px-6 py-4 border-b">
+							<h2 class="title-font text-xl font-semibold text-gray-800">Articles dans votre panier</h2>
+						</div>
 
-                    <!-- Cart Items List -->
-                    <div class="divide-y divide-gray-200">
-                        {% for item in cart %}
-                        <div class="p-6 flex flex-col sm:flex-row gap-6">
-                            <!-- Book Image -->
-                            <div class="flex-shrink-0">
-                                <img src="{{ item.image is defined and item.image ? asset('uploads/' ~ item.image) : asset('images/default-book.jpg') }}" 
-                                     alt="{{ item.title }}" 
-                                     class="h-40 w-32 object-cover rounded-lg shadow-sm">
-                            </div>
+						<!-- Cart Items List -->
+						<div class="divide-y divide-gray-200">
+							{% for item in cart %}
+								<div
+									class="p-6 flex flex-col sm:flex-row gap-6">
+									<!-- Book Image -->
+									<div class="flex-shrink-0">
+										<img src="{{ item.image is defined and item.image ? asset('uploads/' ~ item.image) : asset('images/default-book.jpg') }}" alt="{{ item.title }}" class="h-40 w-32 object-cover rounded-lg shadow-sm">
+									</div>
 
-                            <!-- Book Details -->
-                            <div class="flex-grow">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800">{{ item.title }}</h3>
-                                        {% if item.editor is defined %}
-                                        <p class="text-gray-600 text-sm mt-1">
-                                            <i class="fas fa-building text-indigo-400 mr-1"></i> {{ item.editor }}
-                                        </p>
-                                        {% endif %}
-                                    </div>
-                                    <span class="text-lg font-bold text-indigo-600">{{ item.price }} TND</span>
-                                </div>
+									<!-- Book Details -->
+									<div class="flex-grow">
+										<div class="flex justify-between items-start">
+											<div>
+												<h3 class="text-lg font-semibold text-gray-800">{{ item.title }}</h3>
+												{% if item.editor is defined %}
+													<p class="text-gray-600 text-sm mt-1">
+														<i class="fas fa-building text-indigo-400 mr-1"></i>
+														{{ item.editor }}
+													</p>
+												{% endif %}
+											</div>
+											<span class="text-lg font-bold text-indigo-600">{{ item.price }}
+												TND</span>
+										</div>
 
-                                <!-- Quantity Controls -->
-                                <div class="mt-4 flex items-center">
-                                    <span class="text-gray-700 mr-3">Quantité :</span>
-                                    <div class="flex items-center border rounded-lg overflow-hidden">
-                                        <button onclick="updateQuantity({{ item.id }}, {{ item.quantity - 1 }})" 
-                                                class="bg-gray-100 hover:bg-gray-200 px-3 py-1 transition">
-                                            <i class="fas fa-minus text-gray-600"></i>
-                                        </button>
-                                        <span class="px-4 py-1 bg-white">{{ item.quantity }}</span>
-                                        <button onclick="updateQuantity({{ item.id }}, {{ item.quantity + 1 }})" 
-                                                class="bg-gray-100 hover:bg-gray-200 px-3 py-1 transition">
-                                            <i class="fas fa-plus text-gray-600"></i>
-                                        </button>
-                                    </div>
-                                </div>
+										<!-- Quantity Controls -->
+										<div class="mt-4 flex items-center">
+											<span class="text-gray-700 mr-3">Quantité :</span>
+											<div class="flex items-center border rounded-lg overflow-hidden">
+												<button onclick="updateQuantity({{ item.id }}, {{ item.quantity - 1 }})" class="bg-gray-100 hover:bg-gray-200 px-3 py-1 transition">
+													<i class="fas fa-minus text-gray-600"></i>
+												</button>
+												<span class="px-4 py-1 bg-white">{{ item.quantity }}</span>
+												<button onclick="updateQuantity({{ item.id }}, {{ item.quantity + 1 }})" class="bg-gray-100 hover:bg-gray-200 px-3 py-1 transition">
+													<i class="fas fa-plus text-gray-600"></i>
+												</button>
+											</div>
+										</div>
 
-                                <!-- Remove Button -->
-                                <div class="mt-4">
-                                    <a href="{{ path('home_update_cart', {'id': item.id, 'quantity': item.quantity}) }}" 
-                                       class="text-red-500 hover:text-red-700 text-sm flex items-center">
-                                        <i class="fas fa-trash-alt mr-1"></i> Supprimer l'article
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+										<!-- Remove Button -->
+										<div class="mt-4">
+											<a href="{{ path('home_update_cart', {'id': item.id, 'quantity': item.quantity}) }}" class="text-red-500 hover:text-red-700 text-sm flex items-center">
+												<i class="fas fa-trash-alt mr-1"></i>
+												Supprimer l'article
+											</a>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
 
-            <!-- Order Summary -->
-            <div>
-                <div class="bg-white rounded-xl shadow-md overflow-hidden sticky top-4">
-                    <!-- Summary Header -->
-                    <div class="bg-gray-50 px-6 py-4 border-b">
-                        <h2 class="title-font text-xl font-semibold text-gray-800">Récapitulatif de commande</h2>
-                    </div>
+				<!-- Order Summary -->
+				<div>
+					<div
+						class="bg-white rounded-xl shadow-md overflow-hidden sticky top-4">
+						<!-- Summary Header -->
+						<div class="bg-gray-50 px-6 py-4 border-b">
+							<h2 class="title-font text-xl font-semibold text-gray-800">Récapitulatif de commande</h2>
+						</div>
 
-                    <!-- Summary Content -->
-                    <div class="p-6">
-                        <div class="space-y-4">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Sous-total ({{ cart|length }} article{{ cart|length > 1 ? 's' : '' }})</span>
-                                <span class="font-medium">15 TND</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Livraison</span>
-                                <span class="font-medium">Gratuite</span>
-                            </div>
-                            <div class="border-t border-gray-200 pt-4 flex justify-between">
-                                <span class="text-lg font-semibold">Total</span>
-                                <span class="text-lg font-bold text-indigo-600">15 TND</span>
-                            </div>
-                        </div>
+						<!-- Summary Content -->
+						<div class="p-6">
+							<div class="space-y-4">
+								<div class="flex justify-between">
+									<span class="text-gray-600">Sous-total ({{ cart|length }}
+										article{{ cart|length > 1 ? 's' : '' }})</span>
+									<span class="font-medium">15 TND</span>
+								</div>
+								<div class="flex justify-between">
+									<span class="text-gray-600">Livraison</span>
+									<span class="font-medium">Gratuite</span>
+								</div>
+								<div class="border-t border-gray-200 pt-4 flex justify-between">
+									<span class="text-lg font-semibold">Total</span>
+									<span class="text-lg font-bold text-indigo-600">15 TND</span>
+								</div>
+							</div>
 
-                        <!-- Checkout Button -->
-                        <a href="" 
-                           class="mt-6 block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg text-center transition duration-300">
-                            Passer la commande
-                        </a>
+							<!-- Checkout Button -->
+							<a href="{{ path('checkout') }}" class="mt-6 block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg text-center transition duration-300">
+								Passer la commande
+							</a>
 
-                        <!-- Continue Shopping -->
-                        <a href="{{ path('home_catalogue') }}" 
-                           class="mt-4 block w-full bg-white border border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-medium py-3 px-6 rounded-lg text-center transition duration-300">
-                            Continuer mes achats
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-</div>
+							<!-- Continue Shopping -->
+							<a href="{{ path('home_catalogue') }}" class="mt-4 block w-full bg-white border border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-medium py-3 px-6 rounded-lg text-center transition duration-300">
+								Continuer mes achats
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
 
-<script>
-    function updateQuantity(id, quantity) {
-        
-        window.location.href = '{{ path('home_update_cart', {'id': '__id__', 'quantity': '__quantity__'}) }}'
-            .replace('__id__', id)
-            .replace('__quantity__', quantity);
-    }
-</script>
+	<script>
+		function updateQuantity(id, quantity) {
+
+window.location.href = '{{ path('home_update_cart', {'id': '__id__', 'quantity': '__quantity__'}) }}'.replace('__id__', id).replace('__quantity__', quantity);
+}
+	</script>
 {% endblock %}

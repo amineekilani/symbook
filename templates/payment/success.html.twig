@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement réussi
+{% endblock %}
+
+{% block body %}
+	<div class="container mx-auto px-4 py-16 mt-12 text-center">
+		<div class="bg-white p-8 rounded-xl shadow-md max-w-md mx-auto">
+			<div class="text-green-500 text-5xl mb-4">
+				<i class="fas fa-check-circle"></i>
+			</div>
+			<h1 class="text-2xl font-bold text-gray-800 mb-4">Paiement effectué avec succès !</h1>
+			<p class="text-gray-600 mb-6">Merci pour votre achat. Votre commande a été traitée et sera bientôt expédiée.</p>
+			<a href="{{ path('home_catalogue') }}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg text-center transition duration-300">
+				Retour à la boutique
+			</a>
+		</div>
+	</div>
+{% endblock %}

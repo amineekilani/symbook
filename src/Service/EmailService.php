@@ -28,4 +28,70 @@ class EmailService
 
         $this->mailer->send($email);
     }
+
+    public function sendPaymentConfirmationEmail(string $to, string $username, array $orderDetails, float $total)
+    {
+        // Construire la liste des articles
+        $itemsList = '';
+        foreach ($orderDetails as $item) {
+            $itemsList .= "
+                <tr>
+                    <td style='padding: 8px; border-bottom: 1px solid #ddd;'>{$item['title']}</td>
+                    <td style='padding: 8px; border-bottom: 1px solid #ddd;'>{$item['quantity']}</td>
+                    <td style='padding: 8px; border-bottom: 1px solid #ddd;'>{$item['price']} TND</td>
+                    <td style='padding: 8px; border-bottom: 1px solid #ddd;'>" . ($item['price'] * $item['quantity']) . " TND</td>
+                </tr>
+            ";
+        }
+
+        $email = (new Email())
+            ->from('aminekilani901@gmail.com')
+            ->to($to)
+            ->subject('Confirmation de votre commande - SymBook')
+            ->html("
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>
+                    <div style='text-align: center; margin-bottom: 20px;'>
+                        <h1 style='color: #4f46e5;'>Merci pour votre commande!</h1>
+                    </div>
+                    
+                    <p>Bonjour <strong>$username</strong>,</p>
+                    
+                    <p>Nous vous confirmons que votre commande a bien été reçue et que votre paiement a été traité avec succès.</p>
+                    
+                    <div style='background-color: #f9fafb; padding: 15px; border-radius: 5px; margin: 20px 0;'>
+                        <h2 style='color: #4f46e5; font-size: 18px;'>Récapitulatif de la commande</h2>
+                        
+                        <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+                            <thead>
+                                <tr style='background-color: #f3f4f6;'>
+                                    <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Article</th>
+                                    <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Quantité</th>
+                                    <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Prix unitaire</th>
+                                    <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                $itemsList
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan='3' style='padding: 8px; text-align: right; font-weight: bold;'>Total:</td>
+                                    <td style='padding: 8px; font-weight: bold;'>$total TND</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <p>Votre commande sera préparée et expédiée dans les meilleurs délais.</p>
+                    
+                    <p>Pour toute question concernant votre commande, n'hésitez pas à nous contacter.</p>
+                    
+                    <div style='margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; font-size: 14px;'>
+                        <p>L'équipe SymBook vous remercie pour votre confiance!</p>
+                    </div>
+                </div>
+            ");
+
+        $this->mailer->send($email);
+    }
 }
