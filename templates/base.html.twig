@@ -93,7 +93,6 @@
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ path('home_catalogue') }}" class="text-gray-600 hover:text-indigo-600 transition">Accueil</a>
                     <a href="{{ path('home_catalogue') }}" class="text-gray-600 hover:text-indigo-600 transition">Catalogue</a>
                     <a href="{{ path('app_commandes') }}" class="text-gray-600 hover:text-indigo-600 transition">Mes Commandes</a>
                     <a href="#" class="text-gray-600 hover:text-indigo-600 transition">Contact</a>
@@ -138,7 +137,6 @@
 
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-white py-2 px-4 border-t">
-            <a href="{{ path('home_catalogue') }}" class="block py-2 text-gray-600 hover:text-indigo-600">Accueil</a>
             <a href="{{ path('home_catalogue') }}" class="block py-2 text-gray-600 hover:text-indigo-600">Catalogue</a>
             <a href="{{ path('app_commandes') }}" class="block py-2 text-gray-600 hover:text-indigo-600">Mes Commandes</a>
             <a href="#" class="block py-2 text-gray-600 hover:text-indigo-600">Contact</a>
@@ -171,60 +169,126 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- About -->
-                <div>
-                    <h3 class="title-font text-xl font-bold mb-4">Librairie en Ligne</h3>
-                    <p class="text-gray-400">Votre destination pour découvrir des milliers de livres et trouver votre prochaine lecture favorite.</p>
+<footer class="bg-gray-900 text-white pt-16 pb-8">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+            <!-- About -->
+            <div class="space-y-4">
+                <div class="flex items-center">
+                    <i class="fas fa-book-open text-indigo-500 text-2xl mr-2"></i>
+                    <span class="title-font text-xl font-bold">SymBook</span>
                 </div>
-
-                <!-- Quick Links -->
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Liens rapides</h4>
-                    <ul class="space-y-2">
-                        <li><a href="{{ path('home_catalogue') }}" class="text-gray-400 hover:text-white transition">Accueil</a></li>
-                        <li><a href="{{ path('home_catalogue') }}" class="text-gray-400 hover:text-white transition">Catalogue</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Nouveautés</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Best-sellers</a></li>
-                    </ul>
-                </div>
-
-                <!-- Contact -->
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Contact</h4>
-                    <ul class="space-y-2">
-                        <li class="flex items-center text-gray-400">
-                            <i class="fas fa-map-marker-alt mr-2"></i> 123 Rue des Livres, Paris
-                        </li>
-                        <li class="flex items-center text-gray-400">
-                            <i class="fas fa-phone mr-2"></i> +33 1 23 45 67 89
-                        </li>
-                        <li class="flex items-center text-gray-400">
-                            <i class="fas fa-envelope mr-2"></i> contact@symbook.tn
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Newsletter -->
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Newsletter</h4>
-                    <p class="text-gray-400 mb-4">Abonnez-vous pour recevoir nos dernières nouveautés et offres spéciales.</p>
-                    <form class="flex">
-                        <input type="email" placeholder="Votre email" class="px-4 py-2 rounded-l focus:outline-none text-gray-800 w-full">
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-r">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </form>
+                <p class="text-gray-400 leading-relaxed">Votre destination pour découvrir des milliers de livres et trouver votre prochaine lecture favorite.</p>
+                <div class="flex space-x-4 pt-2">
+                    <a href="#" class="text-gray-400 hover:text-indigo-500 transition transform hover:-translate-y-1">
+                        <i class="fab fa-facebook-f text-lg"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-indigo-500 transition transform hover:-translate-y-1">
+                        <i class="fab fa-twitter text-lg"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-indigo-500 transition transform hover:-translate-y-1">
+                        <i class="fab fa-instagram text-lg"></i>
+                    </a>
                 </div>
             </div>
 
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2025 SymBook. Tous droits réservés.</p>
+            <!-- Quick Links -->
+            <div>
+                <h4 class="font-bold text-lg mb-6 pb-2 border-b border-gray-700 inline-block">Navigation</h4>
+                <ul class="space-y-3">
+                    <li><a href="{{ path('home_catalogue') }}" class="text-gray-400 hover:text-indigo-500 transition flex items-center group">
+                        <span class="w-1 h-1 bg-indigo-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition"></span>
+                        Catalogue
+                    </a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-500 transition flex items-center group">
+                        <span class="w-1 h-1 bg-indigo-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition"></span>
+                        Nouveautés
+                    </a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-500 transition flex items-center group">
+                        <span class="w-1 h-1 bg-indigo-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition"></span>
+                        Best-sellers
+                    </a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-500 transition flex items-center group">
+                        <span class="w-1 h-1 bg-indigo-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition"></span>
+                        Contact
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- Customer Service -->
+            <div>
+                <h4 class="font-bold text-lg mb-6 pb-2 border-b border-gray-700 inline-block">Service Client</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-500 transition flex items-center group">
+                        <span class="w-1 h-1 bg-indigo-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition"></span>
+                        Mon compte
+                    </a></li>
+                    <li><a href="{{ path('app_commandes') }}" class="text-gray-400 hover:text-indigo-500 transition flex items-center group">
+                        <span class="w-1 h-1 bg-indigo-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition"></span>
+                        Mes commandes
+                    </a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-500 transition flex items-center group">
+                        <span class="w-1 h-1 bg-indigo-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition"></span>
+                        Livraison & retours
+                    </a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-500 transition flex items-center group">
+                        <span class="w-1 h-1 bg-indigo-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition"></span>
+                        FAQ
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- Contributors -->
+            <div>
+                <h4 class="font-bold text-lg mb-6 pb-2 border-b border-gray-700 inline-block">Contributeurs</h4>
+                <div class="space-y-6">
+                    <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">
+                        <p class="text-gray-300 mb-2 font-medium">Amine Kilani</p>
+                        <div class="flex space-x-4">
+                            <a href="https://www.linkedin.com/in/amine-kilani" target="_blank" rel="noopener noreferrer" 
+                               class="text-gray-400 hover:text-indigo-500 transition transform hover:-translate-y-1">
+                                <i class="fab fa-linkedin text-xl"></i>
+                            </a>
+                            <a href="https://github.com/aminekilani" target="_blank" rel="noopener noreferrer" 
+                               class="text-gray-400 hover:text-indigo-500 transition transform hover:-translate-y-1">
+                                <i class="fab fa-github text-xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">
+                        <p class="text-gray-300 mb-2 font-medium">Ghada Azizi</p>
+                        <div class="flex space-x-4">
+                            <a href="https://www.linkedin.com/in/ghada-azizi" target="_blank" rel="noopener noreferrer" 
+                               class="text-gray-400 hover:text-indigo-500 transition transform hover:-translate-y-1">
+                                <i class="fab fa-linkedin text-xl"></i>
+                            </a>
+                            <a href="https://github.com/ghadaazizi" target="_blank" rel="noopener noreferrer" 
+                               class="text-gray-400 hover:text-indigo-500 transition transform hover:-translate-y-1">
+                                <i class="fab fa-github text-xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </footer>
+
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">
+                    &copy; 2025 SymBook. Tous droits réservés.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-indigo-500 text-sm transition">Mentions légales</a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-500 text-sm transition">Politique de confidentialité</a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-500 text-sm transition">Conditions générales</a>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mt-4">
+                Encadré par <span class="text-indigo-400 font-medium">Mme Nidhal Cherif</span>
+            </p>
+        </div>
+    </div>
+</footer>
 
     <script>
         // Mobile menu toggle
