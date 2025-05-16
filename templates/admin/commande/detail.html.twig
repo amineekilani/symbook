@@ -1,0 +1,174 @@
+{# templates/admin/commande/detail.html.twig #}
+{% extends 'admin/baseAdmin.html.twig' %}
+
+{% block title %}Détail de la commande #{{ commande.id }}
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid px-4">
+		<h1 class="mt-4">Commande #{{ commande.id }}</h1>
+		<ol class="breadcrumb mb-4">
+			<li class="breadcrumb-item">
+				<a href="{{ path('app_admin_commande') }}">Commandes</a>
+			</li>
+			<li class="breadcrumb-item active">Commande #{{ commande.id }}</li>
+		</ol>
+
+		<div class="row">
+			<div class="col-xl-8">
+				<div class="card mb-4">
+					<div class="card-header">
+						<i class="fas fa-box-open me-1"></i>
+						Produits commandés
+					</div>
+					<div class="card-body">
+						{% if commande.commandeDetailsArray %}
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Produit</th>
+											<th>Prix unitaire</th>
+											<th>Quantité</th>
+											<th>Total</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for item in commande.commandeDetailsArray %}
+											<tr>
+												<td>
+													<div class="d-flex align-items-center">
+														{% if item.image is defined and item.image %}
+															<img src="{{ asset('uploads/' ~ item.image) }}" alt="{{ item.title }}" class="me-2" style="width: 50px; height: 70px; object-fit: cover; border-radius: 4px;">
+														{% endif %}
+														<div>
+															<strong>{{ item.title }}</strong>
+															{% if item.editor is defined %}
+																<br><small class="text-muted">{{ item.editor }}</small>
+															{% endif %}
+														</div>
+													</div>
+												</td>
+												<td>{{ item.price|number_format(2, ',', ' ') }}
+													TND</td>
+												<td>{{ item.quantity }}</td>
+												<td>{{ (item.price * item.quantity)|number_format(2, ',', ' ') }}
+													TND</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+									<tfoot>
+										<tr>
+											<td colspan="3" class="text-end">
+												<strong>Total:</strong>
+											</td>
+											<td>
+												<strong>{{ commande.total|number_format(2, ',', ' ') }}
+													TND</strong>
+											</td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						{% else %}
+							<div class="alert alert-warning">
+								Aucun détail disponible pour cette commande.
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-4">
+				<div class="card mb-4">
+					<div class="card-header">
+						<i class="fas fa-info-circle me-1"></i>
+						Informations de la commande
+					</div>
+					<div class="card-body">
+						{% for message in app.flashes('success') %}
+							<div class="alert alert-success" role="alert">
+								{{ message }}
+							</div>
+						{% endfor %}
+
+						{% for message in app.flashes('error') %}
+							<div class="alert alert-danger" role="alert">
+								{{ message }}
+							</div>
+						{% endfor %}
+
+						<div class="mb-3">
+							<h5 class="card-title">Statut actuel</h5>
+							{% if commande.status == 'completed' %}
+								<div class="badge bg-success fs-6 mb-3">Terminée</div>
+							{% elseif commande.status == 'processing' %}
+								<div class="badge bg-primary fs-6 mb-3">En traitement</div>
+							{% elseif commande.status == 'pending' %}
+								<div class="badge bg-warning text-dark fs-6 mb-3">En attente</div>
+							{% else %}
+								<div class="badge bg-danger fs-6 mb-3">Annulée</div>
+							{% endif %}
+						</div>
+
+						<hr class="my-4">
+
+						<div class="mb-3">
+							<h5 class="card-title">Changer le statut</h5>
+							<div class="d-grid gap-2">
+								{% if commande.status != 'pending' %}
+									<a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'pending'}) }}" class="btn btn-warning">Marquer comme En attente</a>
+								{% endif %}
+
+								{% if commande.status != 'processing' %}
+									<a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'processing'}) }}" class="btn btn-primary">Marquer comme En traitement</a>
+								{% endif %}
+
+								{% if commande.status != 'completed' %}
+									<a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'completed'}) }}" class="btn btn-success">Marquer comme Terminée</a>
+								{% endif %}
+
+								{% if commande.status != 'cancelled' %}
+									<a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'cancelled'}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette commande?')">
+										Annuler la commande
+									</a>
+								{% endif %}
+							</div>
+						</div>
+
+						<hr class="my-4">
+
+						<div class="mb-3">
+							<h5 class="card-title">Détails généraux</h5>
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item d-flex justify-content-between align-items-start">
+									<div class="ms-2 me-auto">
+										<div class="fw-bold">Date de commande</div>
+										{{ commande.createdAt|date('d/m/Y à H:i') }}
+									</div>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-start">
+									<div class="ms-2 me-auto">
+										<div class="fw-bold">Client</div>
+										{% if commande.user %}
+											{{ commande.user.email }}
+										{% else %}
+											Client anonyme
+										{% endif %}
+									</div>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-start">
+									<div class="ms-2 me-auto">
+										<div class="fw-bold">Total de la commande</div>
+										{{ commande.total|number_format(2, ',', ' ') }}
+										TND
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

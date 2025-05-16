@@ -1,123 +1,126 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SymBook | Admin{% endblock %}</title>
-    <link rel="icon" href="{{ asset('symbook-logo.png') }}" type="image/png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <style>
-        .sidebar {
-            transition: all 0.3s;
-        }
-        .sidebar-collapsed {
-            width: 70px;
-        }
-        .sidebar-collapsed .nav-text {
-            display: none;
-        }
-        .sidebar-collapsed .logo-text {
-            display: none;
-        }
-        .content {
-            transition: all 0.3s;
-        }
-        .content-expanded {
-            margin-left: 70px;
-        }
-        .active-nav {
-            background-color: #3b82f6;
-            color: white !important;
-        }
-        .active-nav svg {
-            color: white !important;
-        }
-    </style>
-</head>
-<body class="bg-gray-100 font-sans">
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <div id="sidebar" class="sidebar bg-blue-800 text-white w-64 fixed h-full flex flex-col">
-            <div class="p-4 flex items-center space-x-3 border-b border-blue-700">
-                <i class="fas fa-book-open text-2xl"></i>
-                <span class="logo-text text-xl font-bold">SymBook Admin</span>
-            </div>
-            <div class="flex-1 overflow-y-auto py-4">
-                <ul class="space-y-2 px-2">
-                    <li>
-                        <a href="{{ path('app_dashboard') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
-                            <i class="fas fa-tachometer-alt w-6 text-center"></i>
-                            <span class="nav-text ml-3">Tableau de Bord</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('app_livre_index') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
-                            <i class="fas fa-book w-6 text-center"></i>
-                            <span class="nav-text ml-3">Catalogue Livres</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('app_categorie_index') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
-                            <i class="fas fa-tags w-6 text-center"></i>
-                            <span class="nav-text ml-3">Catégories</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
-                            <i class="fas fa-shopping-cart w-6 text-center"></i>
-                            <span class="nav-text ml-3">Commandes</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('app_user_index') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
-                            <i class="fas fa-users w-6 text-center"></i>
-                            <span class="nav-text ml-3">Utilisateurs</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="p-4 border-t border-blue-700">
-                <button id="toggle-sidebar" class="w-full flex items-center justify-center p-2 rounded-lg hover:bg-blue-700">
-                    <i class="fas fa-chevron-left"></i>
-                    <span class="nav-text ml-3">Réduire</span>
-                </button>
-            </div>
-        </div>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>
+			{% block title %}SymBook | Admin
+			{% endblock %}
+		</title>
+		<link rel="icon" href="{{ asset('symbook-logo.png') }}" type="image/png">
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+		<style>
+			.sidebar {
+				transition: all 0.3s;
+			}
+			.sidebar-collapsed {
+				width: 70px;
+			}
+			.sidebar-collapsed .nav-text {
+				display: none;
+			}
+			.sidebar-collapsed .logo-text {
+				display: none;
+			}
+			.content {
+				transition: all 0.3s;
+			}
+			.content-expanded {
+				margin-left: 70px;
+			}
+			.active-nav {
+				background-color: #3b82f6;
+				color: white !important;
+			}
+			.active-nav svg {
+				color: white !important;
+			}
+		</style>
+	</head>
+	<body class="bg-gray-100 font-sans">
+		<div
+			class="flex h-screen overflow-hidden">
+			<!-- Sidebar -->
+			<div id="sidebar" class="sidebar bg-blue-800 text-white w-64 fixed h-full flex flex-col">
+				<div class="p-4 flex items-center space-x-3 border-b border-blue-700">
+					<i class="fas fa-book-open text-2xl"></i>
+					<span class="logo-text text-xl font-bold">SymBook Admin</span>
+				</div>
+				<div class="flex-1 overflow-y-auto py-4">
+					<ul class="space-y-2 px-2">
+						<li>
+							<a href="{{ path('app_dashboard') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
+								<i class="fas fa-tachometer-alt w-6 text-center"></i>
+								<span class="nav-text ml-3">Tableau de Bord</span>
+							</a>
+						</li>
+						<li>
+							<a href="{{ path('app_livre_index') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
+								<i class="fas fa-book w-6 text-center"></i>
+								<span class="nav-text ml-3">Catalogue Livres</span>
+							</a>
+						</li>
+						<li>
+							<a href="{{ path('app_categorie_index') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
+								<i class="fas fa-tags w-6 text-center"></i>
+								<span class="nav-text ml-3">Catégories</span>
+							</a>
+						</li>
+						<li>
+							<a href="{{ path('app_admin_commande') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
+								<i class="fas fa-shopping-bag w-6 text-center"></i>
+								<span class="nav-text ml-3">Commandes</span>
+							</a>
+						</li>
+						<li>
+							<a href="{{ path('app_user_index') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-700">
+								<i class="fas fa-users w-6 text-center"></i>
+								<span class="nav-text ml-3">Utilisateurs</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="p-4 border-t border-blue-700">
+					<button id="toggle-sidebar" class="w-full flex items-center justify-center p-2 rounded-lg hover:bg-blue-700">
+						<i class="fas fa-chevron-left"></i>
+						<span class="nav-text ml-3">Réduire</span>
+					</button>
+				</div>
+			</div>
 
-      <div id="content" class="content content-expanded flex-1 overflow-auto ml-64">
-        {% block body %}{% endblock %}
-      </div>
-    </div>
+			<div id="content" class="content content-expanded flex-1 overflow-auto ml-64"> {% block body %}{% endblock %}
+				</div>
+			</div>
 
-    <script>
-        // Toggle Sidebar
-        document.getElementById('toggle-sidebar').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            const content = document.getElementById('content');
-            const toggleIcon = this.querySelector('i');
-            
-            sidebar.classList.toggle('sidebar-collapsed');
-            content.classList.toggle('content-expanded');
-            
-            if (sidebar.classList.contains('sidebar-collapsed')) {
-                toggleIcon.classList.remove('fa-chevron-left');
-                toggleIcon.classList.add('fa-chevron-right');
-            } else {
-                toggleIcon.classList.remove('fa-chevron-right');
-                toggleIcon.classList.add('fa-chevron-left');
-            }
-        });
+			<script>
+				// Toggle Sidebar
+document.getElementById('toggle-sidebar').addEventListener('click', function () {
+const sidebar = document.getElementById('sidebar');
+const content = document.getElementById('content');
+const toggleIcon = this.querySelector('i');
 
-        // Set active nav item based on current page
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentPath = window.location.pathname;
-            document.querySelectorAll('.nav-item').forEach(item => {
-                if (item.getAttribute('href') === currentPath) {
-                    item.classList.add('active-nav');
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+sidebar.classList.toggle('sidebar-collapsed');
+content.classList.toggle('content-expanded');
+
+if (sidebar.classList.contains('sidebar-collapsed')) {
+toggleIcon.classList.remove('fa-chevron-left');
+toggleIcon.classList.add('fa-chevron-right');
+} else {
+toggleIcon.classList.remove('fa-chevron-right');
+toggleIcon.classList.add('fa-chevron-left');
+}
+});
+
+// Set active nav item based on current page
+document.addEventListener('DOMContentLoaded', function () {
+const currentPath = window.location.pathname;
+document.querySelectorAll('.nav-item').forEach(item => {
+if (item.getAttribute('href') === currentPath) {
+item.classList.add('active-nav');
+}
+});
+});
+			</script>
+		</body>
+	</html>

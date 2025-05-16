@@ -81,7 +81,7 @@ class HomeController extends AbstractController
                 'id' => $livre->getId(),           // Store the book ID
                 'title' => $livre->getTitre(),     // Store the book title
                 'price' => $livre->getPrix(),      // Store the book price
-                'image' => $livre->getImage(),     // Store the book image
+                'image' => $livre->getImage() ?? null,     // Store the book image
                 'quantity' => 1                    // Initialize the quantity to 1
             ];
         }

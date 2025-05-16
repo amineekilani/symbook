@@ -1,0 +1,76 @@
+{# templates/admin/commande/index.html.twig #}
+{% extends 'admin/baseAdmin.html.twig' %}
+
+{% block title %}Gestion des commandes
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid px-4">
+		<h1 class="mt-4">Gestion des commandes</h1>
+		<ol class="breadcrumb mb-4">
+			<li class="breadcrumb-item active">Commandes</li>
+		</ol>
+
+		<div class="card mb-4">
+			<div class="card-header">
+				<i class="fas fa-table me-1"></i>
+				Liste des commandes
+			</div>
+			<div class="card-body">
+				{% for message in app.flashes('success') %}
+					<div class="alert alert-success" role="alert">
+						{{ message }}
+					</div>
+				{% endfor %}
+
+				<table id="datatablesSimple" class="table table-striped">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Client</th>
+							<th>Date</th>
+							<th>Total</th>
+							<th>Statut</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for commande in commandes %}
+							<tr>
+								<td>#
+									{{ commande.id }}</td>
+								<td>
+									{% if commande.user %}
+										{{ commande.user.email }}
+									{% else %}
+										Client anonyme
+									{% endif %}
+								</td>
+								<td>{{ commande.createdAt|date('d/m/Y H:i') }}</td>
+								<td>{{ commande.total|number_format(2, ',', ' ') }}
+									TND</td>
+								<td>
+									{% if commande.status == 'completed' %}
+										<span class="badge bg-success">Terminée</span>
+									{% elseif commande.status == 'processing' %}
+										<span class="badge bg-primary">En traitement</span>
+									{% elseif commande.status == 'pending' %}
+										<span class="badge bg-warning text-dark">En attente</span>
+									{% else %}
+										<span class="badge bg-danger">Annulée</span>
+									{% endif %}
+								</td>
+								<td>
+									<a href="{{ path('app_admin_commande_detail', {'id': commande.id}) }}" class="btn btn-sm btn-info">
+										<i class="fas fa-eye"></i>
+										Détails
+									</a>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}

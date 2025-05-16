@@ -23,4 +23,13 @@ class CommandeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function save(Commande $commande, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($commande);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 }

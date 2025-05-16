@@ -40,9 +40,11 @@
 								<div
 									class="p-6 flex flex-col sm:flex-row gap-6">
 									<!-- Book Image -->
-									<div class="flex-shrink-0">
-										<img src="{{ item.image is defined and item.image ? asset('uploads/' ~ item.image) : asset('images/default-book.jpg') }}" alt="{{ item.title }}" class="h-40 w-32 object-cover rounded-lg shadow-sm">
-									</div>
+										<div class="flex-shrink-0">
+											<img src="{{ (item.image is defined and item['image']) ? asset('uploads/' ~ item.image) : asset('images/default-book.jpg') }}" 
+												alt="{{ item.title }}" 
+												class="h-40 w-32 object-cover rounded-lg shadow-sm">
+										</div>
 
 									<!-- Book Details -->
 									<div class="flex-grow">
