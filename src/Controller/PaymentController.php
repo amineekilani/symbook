@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
+use App\Enum\TStatutCommande;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -90,7 +91,7 @@ class PaymentController extends AbstractController
             $commande->setUser($user);
             $commande->setTotal($total);
             $commande->setCommandeDetails(json_encode($cart));
-            $commande->setStatus('completed');
+            $commande->setStatut(TStatutCommande::EN_ATTENTE);
             
             $entityManager->persist($commande);
             $entityManager->flush();

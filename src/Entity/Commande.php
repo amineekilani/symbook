@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use App\Enum\TStatutCommande;
 use App\Repository\CommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 class Commande
@@ -23,9 +25,6 @@ class Commande
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
-
     #[ORM\Column]
     private ?float $total = null;
 
@@ -35,10 +34,13 @@ class Commande
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $stripeSessionId = null;
 
+    #[ORM\Column(type: 'string', enumType: TStatutCommande::class)]
+    private TStatutCommande $statut;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
-        $this->status = 'completed';
+        $this->statut = TStatutCommande::EN_ATTENTE;
     }
 
     public function getId(): ?int
@@ -66,18 +68,6 @@ class Commande
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): self
-    {
-        $this->status = $status;
 
         return $this;
     }
@@ -119,6 +109,18 @@ class Commande
     public function setStripeSessionId(?string $stripeSessionId): self
     {
         $this->stripeSessionId = $stripeSessionId;
+
+        return $this;
+    }
+
+    public function getStatut(): ?TStatutCommande
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(TStatutCommande $statut): self
+    {
+        $this->statut = $statut;
 
         return $this;
     }

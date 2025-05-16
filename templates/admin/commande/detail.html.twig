@@ -100,14 +100,12 @@
 
 						<div class="mb-3">
 							<h5 class="card-title">Statut actuel</h5>
-							{% if commande.status == 'completed' %}
-								<div class="badge bg-success fs-6 mb-3">Terminée</div>
-							{% elseif commande.status == 'processing' %}
-								<div class="badge bg-primary fs-6 mb-3">En traitement</div>
-							{% elseif commande.status == 'pending' %}
-								<div class="badge bg-warning text-dark fs-6 mb-3">En attente</div>
-							{% else %}
-								<div class="badge bg-danger fs-6 mb-3">Annulée</div>
+							{% if commande.statut == constant('App\\Enum\\TStatutCommande::CONFIRMED') %}
+								<div class="badge bg-success fs-6 mb-3">{{ commande.statut.value }}</div>
+							{% elseif commande.statut == constant('App\\Enum\\TStatutCommande::EN_ATTENTE') %}
+								<div class="badge bg-warning text-dark fs-6 mb-3">{{ commande.statut.value }}</div>
+							{% elseif commande.statut == constant('App\\Enum\\TStatutCommande::ANNULEE') %}
+								<div class="badge bg-danger fs-6 mb-3">{{ commande.statut.value }}</div>
 							{% endif %}
 						</div>
 
@@ -115,20 +113,29 @@
 
 						<div class="mb-3">
 							<h5 class="card-title">Changer le statut</h5>
-							<div class="d-grid gap-2">
-								{% if commande.status != 'pending' %}
+							<div
+								class="d-grid gap-2">
+								<!-- Nouveaux boutons simplifiés pour confirmer et annuler -->
+								<a href="{{ path('app_admin_commande_confirm', {'id': commande.id}) }}" class="btn btn-success btn-lg mb-2">
+									<i class="fas fa-check-circle me-2"></i>Confirmer la commande
+								</a>
+								<a href="{{ path('app_admin_commande_cancel', {'id': commande.id}) }}" class="btn btn-danger btn-lg" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette commande?')">
+									<i class="fas fa-times-circle me-2"></i>Annuler la commande
+								</a>
+
+								<hr
+								class="my-3">
+
+								<!-- Boutons existants pour les changements détaillés de statut -->
+								{% if commande.statut != constant('App\\Enum\\TStatutCommande::EN_ATTENTE') %}
 									<a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'pending'}) }}" class="btn btn-warning">Marquer comme En attente</a>
 								{% endif %}
 
-								{% if commande.status != 'processing' %}
-									<a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'processing'}) }}" class="btn btn-primary">Marquer comme En traitement</a>
+								{% if commande.statut != constant('App\\Enum\\TStatutCommande::CONFIRMED') %}
+									<a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'completed'}) }}" class="btn btn-success">Marquer comme Confirmée</a>
 								{% endif %}
 
-								{% if commande.status != 'completed' %}
-									<a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'completed'}) }}" class="btn btn-success">Marquer comme Terminée</a>
-								{% endif %}
-
-								{% if commande.status != 'cancelled' %}
+								{% if commande.statut != constant('App\\Enum\\TStatutCommande::ANNULEE') %}
 									<a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'cancelled'}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette commande?')">
 										Annuler la commande
 									</a>

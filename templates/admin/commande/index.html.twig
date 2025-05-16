@@ -1,4 +1,3 @@
-{# templates/admin/commande/index.html.twig #}
 {% extends 'admin/baseAdmin.html.twig' %}
 
 {% block title %}Gestion des commandes
@@ -50,14 +49,12 @@
 								<td>{{ commande.total|number_format(2, ',', ' ') }}
 									TND</td>
 								<td>
-									{% if commande.status == 'completed' %}
-										<span class="badge bg-success">Terminée</span>
-									{% elseif commande.status == 'processing' %}
-										<span class="badge bg-primary">En traitement</span>
-									{% elseif commande.status == 'pending' %}
-										<span class="badge bg-warning text-dark">En attente</span>
-									{% else %}
-										<span class="badge bg-danger">Annulée</span>
+									{% if commande.statut == constant('App\\Enum\\TStatutCommande::CONFIRMED') %}
+										<span class="badge bg-success">{{ commande.statut.value }}</span>
+									{% elseif commande.statut == constant('App\\Enum\\TStatutCommande::EN_ATTENTE') %}
+										<span class="badge bg-warning text-dark">{{ commande.statut.value }}</span>
+									{% elseif commande.statut == constant('App\\Enum\\TStatutCommande::ANNULEE') %}
+										<span class="badge bg-danger">{{ commande.statut.value }}</span>
 									{% endif %}
 								</td>
 								<td>

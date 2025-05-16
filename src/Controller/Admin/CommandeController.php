@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Commande;
+use App\Enum\TStatutCommande;
 use App\Repository\CommandeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,17 +37,45 @@ final class CommandeController extends AbstractController
         string $status,
         CommandeRepository $commandeRepository
     ): Response {
-        $validStatuses = ['pending', 'processing', 'completed', 'cancelled'];
+        $statutMap = [
+            'pending' => TStatutCommande::EN_ATTENTE,
+            'processing' => TStatutCommande::CONFIRMED,
+            'cancelled' => TStatutCommande::ANNULEE
+        ];
 
-        if (!in_array($status, $validStatuses)) {
+        if (!array_key_exists($status, $statutMap)) {
             $this->addFlash('error', 'Le statut demandé n\'est pas valide.');
             return $this->redirectToRoute('app_admin_commande_detail', ['id' => $commande->getId()]);
         }
 
-        $commande->setStatus($status);
+        $commande->setStatut($statutMap[$status]);
         $commandeRepository->save($commande, true);
 
         $this->addFlash('success', 'Le statut de la commande a été mis à jour.');
+        return $this->redirectToRoute('app_admin_commande_detail', ['id' => $commande->getId()]);
+    }
+
+    #[Route('/{id}/confirm', name: 'app_admin_commande_confirm')]
+    public function confirm(
+        Commande $commande,
+        CommandeRepository $commandeRepository
+    ): Response {
+        $commande->setStatut(TStatutCommande::CONFIRMED);
+        $commandeRepository->save($commande, true);
+
+        $this->addFlash('success', 'La commande a été confirmée.');
+        return $this->redirectToRoute('app_admin_commande_detail', ['id' => $commande->getId()]);
+    }
+
+    #[Route('/{id}/cancel', name: 'app_admin_commande_cancel')]
+    public function cancel(
+        Commande $commande,
+        CommandeRepository $commandeRepository
+    ): Response {
+        $commande->setStatut(TStatutCommande::ANNULEE);
+        $commandeRepository->save($commande, true);
+
+        $this->addFlash('success', 'La commande a été annulée.');
         return $this->redirectToRoute('app_admin_commande_detail', ['id' => $commande->getId()]);
     }
 }
