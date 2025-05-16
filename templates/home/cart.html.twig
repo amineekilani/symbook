@@ -100,10 +100,16 @@
 						<!-- Summary Content -->
 						<div class="p-6">
 							<div class="space-y-4">
+								{% set total = 0 %}
+								{% for item in cart %}
+									{% set total = total + (item.price * item.quantity) %}
+								{% endfor %}
+
 								<div class="flex justify-between">
 									<span class="text-gray-600">Sous-total ({{ cart|length }}
 										article{{ cart|length > 1 ? 's' : '' }})</span>
-									<span class="font-medium">15 TND</span>
+									<span class="font-medium">{{ total }}
+										TND</span>
 								</div>
 								<div class="flex justify-between">
 									<span class="text-gray-600">Livraison</span>
@@ -111,7 +117,8 @@
 								</div>
 								<div class="border-t border-gray-200 pt-4 flex justify-between">
 									<span class="text-lg font-semibold">Total</span>
-									<span class="text-lg font-bold text-indigo-600">15 TND</span>
+									<span class="text-lg font-bold text-indigo-600">{{ total }}
+										TND</span>
 								</div>
 							</div>
 
