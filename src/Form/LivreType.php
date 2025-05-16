@@ -9,6 +9,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class LivreType extends AbstractType
 {
@@ -30,7 +32,16 @@ class LivreType extends AbstractType
             ->add('dateEdition', null, [
                 'widget' => 'single_text'
             ])
-            ->add('prix')
+            ->add('prix', NumberType::class, [
+                'attr' => [
+                    'min' => 0
+                ]
+            ])
+            ->add('quantite', IntegerType::class, [
+                'attr' => [
+                    'min' => 0
+                ]
+            ])
             ->add('categorie', EntityType::class, [
                 'class' => Categorie::class,
                 'placeholder' => 'Sélectionner une catégorie',
