@@ -43,15 +43,15 @@
 					<h2 class="text-lg font-semibold text-gray-800">Liste des commandes</h2>
 				</div>
 				<div class="flex space-x-2">
-					<div class="relative">
-						<select class="appearance-none bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
-							<option>Tous les statuts</option>
-							<option>Confirmée</option>
-							<option>En attente</option>
-							<option>Annulée</option>
+					<form method="get" action="{{ path('app_admin_commande') }}" class="relative">
+						<select name="statut" class="appearance-none bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" onchange="this.form.submit()">
+							<option value="">Tous les statuts</option>
+							<option value="CONFIRMED" {% if app.request.query.get('statut') == 'CONFIRMED' %} selected {% endif %}>{{ constant('App\\Enum\\TStatutCommande::CONFIRMED').value }}</option>
+							<option value="EN_ATTENTE" {% if app.request.query.get('statut') == 'EN_ATTENTE' %} selected {% endif %}>{{ constant('App\\Enum\\TStatutCommande::EN_ATTENTE').value }}</option>
+							<option value="ANNULEE" {% if app.request.query.get('statut') == 'ANNULEE' %} selected {% endif %}>{{ constant('App\\Enum\\TStatutCommande::ANNULEE').value }}</option>
 						</select>
 						<i class="fas fa-chevron-down absolute right-3 top-3 text-gray-500 pointer-events-none"></i>
-					</div>
+					</form>
 				</div>
 			</div>
 
@@ -141,8 +141,9 @@
 					commandes
 				</div>
 				<div class="flex space-x-2">
+					{% set queryParams = app.request.query.all %}
 					{% if commandes.getCurrentPageNumber > 1 %}
-						<a href="{{ path('app_admin_commande', {'page': commandes.getCurrentPageNumber - 1}) }}" class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+						<a href="{{ path('app_admin_commande', queryParams|merge({'page': commandes.getCurrentPageNumber - 1})) }}" class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
 							Précédent
 						</a>
 					{% else %}
@@ -152,13 +153,13 @@
 					{% endif %}
 
 					{% for page in 1..commandes.getPageCount %}
-						<a href="{{ path('app_admin_commande', {'page': page}) }}" class="px-3 py-1 border rounded-md text-sm font-medium {% if page == commandes.getCurrentPageNumber %}bg-blue-500 text-white{% else %}text-gray-700 bg-white hover:bg-gray-50{% endif %}">
+						<a href="{{ path('app_admin_commande', queryParams|merge({'page': page})) }}" class="px-3 py-1 border rounded-md text-sm font-medium {% if page == commandes.getCurrentPageNumber %}bg-blue-500 text-white{% else %}text-gray-700 bg-white hover:bg-gray-50{% endif %}">
 							{{ page }}
 						</a>
 					{% endfor %}
 
 					{% if commandes.getCurrentPageNumber < commandes.getPageCount %}
-						<a href="{{ path('app_admin_commande', {'page': commandes.getCurrentPageNumber + 1}) }}" class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+						<a href="{{ path('app_admin_commande', queryParams|merge({'page': commandes.getCurrentPageNumber + 1})) }}" class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
 							Suivant
 						</a>
 					{% else %}

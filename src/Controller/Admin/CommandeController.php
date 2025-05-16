@@ -16,20 +16,29 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class CommandeController extends AbstractController
 {
     #[Route('/', name: 'app_admin_commande')]
-    public function index(CommandeRepository $commandeRepository, PaginatorInterface $paginator, Request $request): Response
+    public function index(Request $request, CommandeRepository $commandeRepository, PaginatorInterface $paginator): Response
     {
-        $query = $commandeRepository->createQueryBuilder('c')
-            ->orderBy('c.createdAt', 'DESC')
-            ->getQuery();
+        $statut = $request->query->get('statut');
+        $queryBuilder = $commandeRepository->createQueryBuilder('c');
 
-        $commandes = $paginator->paginate(
-            $query,
+        // Filtre par statut si spécifié
+        if ($statut) {
+            $enumValue = constant('App\\Enum\\TStatutCommande::' . $statut);
+            $queryBuilder->andWhere('c.statut = :statut')
+                ->setParameter('statut', $enumValue);
+        }
+
+        // Ajouter d'autres conditions si nécessaire
+        $queryBuilder->orderBy('c.createdAt', 'DESC');
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
             $request->query->getInt('page', 1),
-            5
+            5 // Nombre d'éléments par page
         );
 
         return $this->render('admin/commande/index.html.twig', [
-            'commandes' => $commandes,
+            'commandes' => $pagination
         ]);
     }
 
@@ -41,7 +50,7 @@ final class CommandeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/change-status/{status}', name: 'change_status')]
+    #[Route('/{id}/change-status/{status}', name: 'app_admin_commande_change_status')]
     public function changeStatus(
         Commande $commande,
         string $status,
@@ -65,7 +74,7 @@ final class CommandeController extends AbstractController
         return $this->redirectToRoute('app_admin_commande_detail', ['id' => $commande->getId()]);
     }
 
-    #[Route('/{id}/confirm', name: 'confirm')]
+    #[Route('/{id}/confirm', name: 'app_admin_commande_confirm')]
     public function confirm(
         Commande $commande,
         CommandeRepository $commandeRepository
@@ -77,7 +86,7 @@ final class CommandeController extends AbstractController
         return $this->redirectToRoute('app_admin_commande_detail', ['id' => $commande->getId()]);
     }
 
-    #[Route('/{id}/cancel', name: 'cancel')]
+    #[Route('/{id}/cancel', name: 'app_admin_commande_cancel')]
     public function cancel(
         Commande $commande,
         CommandeRepository $commandeRepository
