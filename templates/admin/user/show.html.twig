@@ -1,6 +1,6 @@
 {% extends 'admin/baseAdmin.html.twig' %}
 
-{% block title %}{{ user.email }} - Profile{% endblock %}
+{% block title %}{{ user.nom }}{% endblock %}
 
 {% block body %}
 <div id="content" class="content content-expanded flex-1 overflow-auto ml-64">
@@ -12,19 +12,19 @@
                     <li class="inline-flex items-center">
                         <a href="{{ path('app_dashboard') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                             <i class="fas fa-home mr-2"></i>
-                            Dashboard
+                            Tableau de bord
                         </a>
                     </li>
                     <li>
                         <div class="flex items-center">
                             <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-                            <a href="{{ path('app_user_index') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 transition-colors">Users</a>
+                            <a href="{{ path('app_user_index') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 transition-colors">Utilisateurs</a>
                         </div>
                     </li>
                     <li aria-current="page">
                         <div class="flex items-center">
                             <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Profile</span>
+                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Profil</span>
                         </div>
                     </li>
                 </ol>
@@ -32,7 +32,7 @@
             
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Profile</h1>
+                    <h1 class="text-2xl font-bold text-gray-900">Profil</h1>
                     <p class="text-gray-600 mt-1">Détails pour {{ user.email }}</p>
                 </div>
                 <div class="flex space-x-3">
@@ -83,7 +83,7 @@
                     <!-- Right Column -->
                     <div class="space-y-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-500">Roles</label>
+                            <label class="block text-sm font-medium text-gray-500">Rôles</label>
                             <div class="mt-1 space-x-2">
                                 {% for role in user.roles %}
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
@@ -94,11 +94,11 @@
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-500">Password</label>
+                            <label class="block text-sm font-medium text-gray-500">Mot de passe</label>
                             <p class="mt-1 text-sm text-gray-900">
                                 <span class="font-mono bg-gray-50 p-2 rounded">••••••••</span>
-                                <button class="ml-2 text-xs text-blue-600 hover:text-blue-800" onclick="alert('For security reasons, passwords cannot be displayed.');">
-                                    <i class="fas fa-info-circle"></i> Why hidden?
+                                <button class="ml-2 text-xs text-blue-600 hover:text-blue-800" onclick="alert('Pour des raisons de sécurité, les mots de passe ne peuvent pas être affichés.');">
+                                    <i class="fas fa-info-circle"></i> Pourquoi caché ?
                                 </button>
                             </p>
                         </div>
@@ -108,11 +108,11 @@
             
             <!-- Danger Zone -->
             <div class="px-4 py-5 sm:px-6 bg-red-50 border-t border-red-200">
-                <h3 class="text-lg leading-6 font-medium text-red-800">Danger Zone</h3>
-                <p class="mt-1 text-sm text-red-600">These actions are irreversible. Proceed with caution.</p>
+                <h3 class="text-lg leading-6 font-medium text-red-800">Zone de danger</h3>
+                <p class="mt-1 text-sm text-red-600">Ces actions sont irréversibles. Procédez avec prudence.</p>
                 
                 <div class="mt-4">
-                    {{ include('user/_delete_form.html.twig') }}
+                    {{ include('admin/user/_delete_form.html.twig') }}
                 </div>
             </div>
         </div>
@@ -133,4 +133,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
->>>>>>> dd5e241228992cae19e01f3d868f01b3c55e4923
