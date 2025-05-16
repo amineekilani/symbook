@@ -14,16 +14,45 @@ class EmailService
         $this->mailer = $mailer;
     }
 
-    public function sendConfirmationEmail(string $to, string $username)
+    public function sendConfirmationEmail(string $to, string $username, string $verificationUrl)
     {
         $email = (new Email())
             ->from('aminekilani901@gmail.com')
             ->to($to)
-            ->subject('Confirmation d\'inscription')
+            ->subject('Confirmation de votre inscription - SymBook')
             ->html("
-                <p>Bonjour <strong>$username</strong>,</p>
-                <p>Merci pour votre inscription. Veuillez cliquer sur le lien ci-dessous pour confirmer votre adresse e-mail :</p>
-                <p><a href='https://tondomaine.tn/confirmation/$username'>Confirmer mon adresse</a></p>
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>
+                    <div style='text-align: center; margin-bottom: 20px;'>
+                        <h1 style='color: #4f46e5;'>Bienvenue chez SymBook!</h1>
+                    </div>
+                    
+                    <p>Bonjour <strong>$username</strong>,</p>
+                    
+                    <p>Merci pour votre inscription sur notre plateforme. Pour pouvoir profiter pleinement de nos services, veuillez confirmer votre adresse e-mail en cliquant sur le bouton ci-dessous :</p>
+                    
+                    <div style='text-align: center; margin: 30px 0;'>
+                        <a href='$verificationUrl' 
+                           style='background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;'>
+                            Confirmer mon adresse email
+                        </a>
+                    </div>
+                    
+                    <div style='background-color: #f9fafb; padding: 15px; border-radius: 5px; margin: 20px 0;'>
+                        <h2 style='color: #4f46e5; font-size: 18px;'>Ce qui vous attend</h2>
+                        <ul style='color: #4b5563; line-height: 1.5;'>
+                            <li>Accès à des centaines de livres dans notre catalogue</li>
+                            <li>Suivi de vos commandes</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Si vous n'avez pas créé de compte sur SymBook, veuillez ignorer ce message.</p>
+                    
+                    <p>Pour toute question, n'hésitez pas à nous contacter.</p>
+                    
+                    <div style='margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; font-size: 14px;'>
+                        <p>L'équipe SymBook vous souhaite une excellente expérience de lecture!</p>
+                    </div>
+                </div>
             ");
 
         $this->mailer->send($email);

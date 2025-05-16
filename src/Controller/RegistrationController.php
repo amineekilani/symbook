@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use Symfony\Component\Mime\Email;
+use App\Service\EmailService;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,12 +14,16 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer, VerifyEmailHelperInterface $verifyEmailHelper): Response
-    {
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EntityManagerInterface $entityManager,
+        VerifyEmailHelperInterface $verifyEmailHelper,
+        EmailService $emailService
+    ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -29,13 +33,15 @@ class RegistrationController extends AbstractController
             $plainPassword = $form->get('plainPassword')->getData();
 
             // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-            $user->setIsVerified(false); // L'utilisateur n'est pas vérifié par défaut
+            $user->setPassword(
+                $userPasswordHasher->hashPassword($user, $plainPassword)
+            );
+            $user->setIsVerified(false);
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Générer le lien de vérification
+            // Generate verification link
             $signatureComponents = $verifyEmailHelper->generateSignature(
                 'app_verify_email',
                 $user->getId(),
@@ -43,20 +49,12 @@ class RegistrationController extends AbstractController
                 ['id' => $user->getId()]
             );
 
-            // Créer et envoyer l'email
-            $email = (new Email())
-                ->from('aminekilani901@gmail.com')
-                ->to($user->getEmail())
-                ->subject('SymBook - Vérification de votre adresse email')
-                ->html(sprintf(
-                    '<h1>Bienvenue sur notre site !</h1>
-                    <p>Pour confirmer votre adresse email, veuillez cliquer sur le lien suivant :</p>
-                    <p><a href="%s">Confirmer mon email</a></p>
-                    <p>Ce lien expirera dans 24 heures.</p>',
-                    $signatureComponents->getSignedUrl()
-                ));
-
-            $mailer->send($email);
+            // Use your EmailService to send the confirmation
+            $emailService->sendConfirmationEmail(
+                $user->getEmail(),
+                $user->getNom() ?? $user->getEmail() ?? 'User',
+                $signatureComponents->getSignedUrl()
+            );
 
             return $this->redirectToRoute('app_login');
         }
