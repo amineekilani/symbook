@@ -14,9 +14,9 @@ class UserType extends AbstractType
         $builder
             ->add('email')
             ->add('nom')
-            ->add('roles')
-            ->add('password')
-            ->add('isVerified')
+            ->add('isVerified', null, [
+                'label' => 'Compte vérifié'
+            ])
         ;
     }
 
