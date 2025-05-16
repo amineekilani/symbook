@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Commande;
 use App\Enum\TStatutCommande;
+use App\Repository\LivreRepository;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -70,20 +71,20 @@ class PaymentController extends AbstractController
 
     #[Route('/payment/success', name: 'payment_success')]
     public function paymentSuccess(
-        Request $request, 
+        Request $request,
         EmailService $emailService,
-        EntityManagerInterface $entityManager
-    ): Response
-    {
+        EntityManagerInterface $entityManager,
+        LivreRepository $livreRepository
+    ): Response {
         // Récupérer les détails de la commande
         $orderDetails = $request->getSession()->get('order_details', []);
         $cart = $orderDetails['items'] ?? [];
         $total = $orderDetails['total'] ?? 0;
-        
+
         // Obtenir l'utilisateur connecté
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        
+
         // Enregistrer la commande dans la base de données
         if ($user) {
             // Créer une nouvelle commande
@@ -92,10 +93,26 @@ class PaymentController extends AbstractController
             $commande->setTotal($total);
             $commande->setCommandeDetails(json_encode($cart));
             $commande->setStatut(TStatutCommande::EN_ATTENTE);
-            
+
             $entityManager->persist($commande);
+
+            // Mettre à jour les stocks de livres
+            foreach ($cart as $item) {
+                $livre = $livreRepository->find($item['id']);
+                if ($livre) {
+                    // Calculer la nouvelle quantité
+                    $newQuantity = $livre->getQuantite() - $item['quantity'];
+                    // S'assurer que la quantité ne devient pas négative
+                    $livre->setQuantite(max(0, $newQuantity));
+
+                    // Persister les changements
+                    $entityManager->persist($livre);
+                }
+            }
+
+            // Enregistrer tous les changements en base de données
             $entityManager->flush();
-            
+
             // Envoyer l'email de confirmation
             $emailService->sendPaymentConfirmationEmail(
                 $user->getEmail(),
@@ -104,12 +121,12 @@ class PaymentController extends AbstractController
                 $total
             );
         }
-        
+
         // Vider le panier et les détails de commande après un paiement réussi
         $request->getSession()->remove('cart');
         $request->getSession()->remove('order_details');
-        
-        $this->addFlash('success', 'Paiement réussi ! Votre commande a été traitée.');
+
+        $this->addFlash('success', 'Paiement réussi ! Votre commande a été traitée et les stocks ont été mis à jour.');
         return $this->render('payment/success.html.twig');
     }
 
