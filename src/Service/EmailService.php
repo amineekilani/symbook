@@ -123,4 +123,42 @@ class EmailService
 
         $this->mailer->send($email);
     }
+
+    public function sendPasswordResetEmail(string $to, string $username, string $resetUrl)
+    {
+        $email = (new Email())
+            ->from('aminekilani901@gmail.com')
+            ->to($to)
+            ->subject('Réinitialisation de votre mot de passe - SymBook')
+            ->html("
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>
+                    <div style='text-align: center; margin-bottom: 20px;'>
+                        <h1 style='color: #4f46e5;'>Réinitialisation de mot de passe</h1>
+                    </div>
+                    
+                    <p>Bonjour <strong>$username</strong>,</p>
+                    
+                    <p>Vous avez demandé la réinitialisation de votre mot de passe sur SymBook. Veuillez cliquer sur le bouton ci-dessous pour créer un nouveau mot de passe :</p>
+                    
+                    <div style='text-align: center; margin: 30px 0;'>
+                        <a href='$resetUrl' 
+                           style='background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;'>
+                            Réinitialiser mon mot de passe
+                        </a>
+                    </div>
+                    
+                    <div style='background-color: #f9fafb; padding: 15px; border-radius: 5px; margin: 20px 0;'>
+                        <p style='color: #4b5563;'>Ce lien est valide pendant 1 heure. Après cela, vous devrez faire une nouvelle demande de réinitialisation.</p>
+                    </div>
+                    
+                    <p>Si vous n'avez pas demandé la réinitialisation de votre mot de passe, veuillez ignorer ce message.</p>
+                    
+                    <div style='margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; font-size: 14px;'>
+                        <p>L'équipe SymBook vous remercie pour votre confiance!</p>
+                    </div>
+                </div>
+            ");
+
+        $this->mailer->send($email);
+    }
 }
