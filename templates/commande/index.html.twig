@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Commandes{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8 mt-12">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <h1 class="title-font text-4xl md:text-5xl font-bold text-gray-800 mb-4">Mes Commandes</h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Consultez l'historique de toutes vos commandes passées</p>
+    </div>
+    
+    {% if commandes is empty %}
+        <div class="text-center py-16">
+            <div class="inline-block bg-indigo-100 text-indigo-800 px-6 py-4 rounded-lg">
+                <i class="fas fa-shopping-bag mr-2"></i>
+                Vous n'avez passé aucune commande
+            </div>
+            <p class="mt-4 text-gray-600">Commencez par
+                <a href="{{ path('home_catalogue') }}" class="text-indigo-600 hover:underline">explorer notre catalogue</a>
+                pour trouver des livres qui vous intéressent.</p>
+        </div>
+    {% else %}
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b">
+                <h2 class="title-font text-xl font-semibold text-gray-800">Historique des commandes</h2>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Numéro
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Date
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Montant
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Statut
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for commande in commandes %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">#{{ commande.id }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-500">{{ commande.createdAt|date('d/m/Y H:i') }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-semibold text-indigo-600">{{ commande.total }} TND</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        {{ commande.status }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <a href="{{ path('app_commande_details', {'id': commande.id}) }}" 
+                                       class="text-indigo-600 hover:text-indigo-900">
+                                        Détails
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

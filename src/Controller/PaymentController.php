@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Commande;
 use App\Service\EmailService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,19 +68,34 @@ class PaymentController extends AbstractController
     }
 
     #[Route('/payment/success', name: 'payment_success')]
-    public function paymentSuccess(Request $request, EmailService $emailService): Response
+    public function paymentSuccess(
+        Request $request, 
+        EmailService $emailService,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         // Récupérer les détails de la commande
         $orderDetails = $request->getSession()->get('order_details', []);
         $cart = $orderDetails['items'] ?? [];
         $total = $orderDetails['total'] ?? 0;
-
+        
         // Obtenir l'utilisateur connecté
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-
-        // Envoyer l'email de confirmation si l'utilisateur est connecté
+        
+        // Enregistrer la commande dans la base de données
         if ($user) {
+            // Créer une nouvelle commande
+            $commande = new Commande();
+            $commande->setUser($user);
+            $commande->setTotal($total);
+            $commande->setCommandeDetails(json_encode($cart));
+            $commande->setStatus('completed');
+            
+            $entityManager->persist($commande);
+            $entityManager->flush();
+            
+            // Envoyer l'email de confirmation
             $emailService->sendPaymentConfirmationEmail(
                 $user->getEmail(),
                 $user->getNom() ?? 'Client',
@@ -86,11 +103,11 @@ class PaymentController extends AbstractController
                 $total
             );
         }
-
+        
         // Vider le panier et les détails de commande après un paiement réussi
         $request->getSession()->remove('cart');
         $request->getSession()->remove('order_details');
-
+        
         $this->addFlash('success', 'Paiement réussi ! Votre commande a été traitée.');
         return $this->render('payment/success.html.twig');
     }

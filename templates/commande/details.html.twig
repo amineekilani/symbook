@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la commande{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8 mt-12">
+    <!-- Hero Section -->
+    <div class="mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="title-font text-3xl font-bold text-gray-800 mb-2">Commande #{{ commande.id }}</h1>
+            <p class="text-gray-600">Passée le {{ commande.createdAt|date('d/m/Y à H:i') }}</p>
+        </div>
+        <a href="{{ path('app_commandes') }}" class="text-indigo-600 hover:text-indigo-800">
+            <i class="fas fa-arrow-left mr-2"></i> Retour aux commandes
+        </a>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Commande Details -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b">
+                    <h2 class="title-font text-xl font-semibold text-gray-800">Détails de la commande</h2>
+                </div>
+                
+                <div class="p-6">
+                    <div class="mb-6">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ commande.status == 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                            {{ commande.status == 'completed' ? 'Complétée' : commande.status }}
+                        </span>
+                    </div>
+                    
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Article
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Quantité
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Prix unitaire
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Total
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for item in commande.commandeDetailsArray %}
+                                <tr>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-md object-cover" 
+                                                     src="{{ item.image is defined and item.image ? asset('uploads/' ~ item.image) : asset('images/default-book.jpg') }}" 
+                                                     alt="{{ item.title }}">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">{{ item.title }}</div>
+                                                {% if item.editor is defined %}
+                                                    <div class="text-sm text-gray-500">{{ item.editor }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ item.quantity }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ item.price }} TND</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ item.price * item.quantity }} TND
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Commande Summary -->
+        <div>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden sticky top-24">
+                <div class="bg-gray-50 px-6 py-4 border-b">
+                    <h2 class="title-font text-xl font-semibold text-gray-800">Récapitulatif</h2>
+                </div>
+                
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Sous-total</span>
+                            <span class="font-medium">{{ commande.total }} TND</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Livraison</span>
+                            <span class="font-medium">Gratuite</span>
+                        </div>
+                        <div class="border-t border-gray-200 pt-4 flex justify-between">
+                            <span class="text-lg font-semibold">Total</span>
+                            <span class="text-lg font-bold text-indigo-600">{{ commande.total }} TND</span>
+                        </div>
+                    </div>
+                    
+                    <a href="{{ path('home_catalogue') }}" 
+                       class="mt-6 block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg text-center transition duration-300">
+                        Continuer mes achats
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
