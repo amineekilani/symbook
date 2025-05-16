@@ -4,69 +4,169 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container-fluid px-4">
-		<h1 class="mt-4">Gestion des commandes</h1>
-		<ol class="breadcrumb mb-4">
-			<li class="breadcrumb-item active">Commandes</li>
-		</ol>
-
-		<div class="card mb-4">
-			<div class="card-header">
-				<i class="fas fa-table me-1"></i>
-				Liste des commandes
+	<div class="container-fluid px-4 py-6">
+		<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+			<div>
+				<h1 class="text-2xl font-bold text-gray-800">Gestion des commandes</h1>
+				<nav class="flex mt-2" aria-label="Breadcrumb">
+					<ol class="inline-flex items-center space-x-1 md:space-x-2">
+						<li class="inline-flex items-center">
+							<a href="{{ path('app_dashboard') }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+								<i class="fas fa-home mr-2"></i>
+								Tableau de bord
+							</a>
+						</li>
+						<li aria-current="page">
+							<div class="flex items-center">
+								<i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+								<span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Commandes</span>
+							</div>
+						</li>
+					</ol>
+				</nav>
 			</div>
-			<div class="card-body">
-				{% for message in app.flashes('success') %}
-					<div class="alert alert-success" role="alert">
-						{{ message }}
-					</div>
-				{% endfor %}
+		</div>
 
-				<table id="datatablesSimple" class="table table-striped">
-					<thead>
+		{% for message in app.flashes('success') %}
+			<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded" role="alert">
+				<div class="flex items-center">
+					<i class="fas fa-check-circle mr-2"></i>
+					<p>{{ message }}</p>
+				</div>
+			</div>
+		{% endfor %}
+
+		<div class="bg-white shadow-md rounded-lg overflow-hidden">
+			<div class="px-6 py-4 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between">
+				<div class="flex items-center mb-4 md:mb-0">
+					<i class="fas fa-shopping-bag text-blue-500 mr-2"></i>
+					<h2 class="text-lg font-semibold text-gray-800">Liste des commandes</h2>
+				</div>
+				<div class="flex space-x-2">
+					<div class="relative">
+						<select class="appearance-none bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+							<option>Tous les statuts</option>
+							<option>Confirmée</option>
+							<option>En attente</option>
+							<option>Annulée</option>
+						</select>
+						<i class="fas fa-chevron-down absolute right-3 top-3 text-gray-500 pointer-events-none"></i>
+					</div>
+				</div>
+			</div>
+
+			<div class="overflow-x-auto">
+				<table class="min-w-full divide-y divide-gray-200">
+					<thead class="bg-gray-50">
 						<tr>
-							<th>ID</th>
-							<th>Client</th>
-							<th>Date</th>
-							<th>Total</th>
-							<th>Statut</th>
-							<th>Actions</th>
+							<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Commande</th>
+							<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+							<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+							<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+							<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody class="bg-white divide-y divide-gray-200">
 						{% for commande in commandes %}
-							<tr>
-								<td>#
+							<tr class="hover:bg-gray-50 transition-colors">
+								<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#
 									{{ commande.id }}</td>
-								<td>
-									{% if commande.user %}
-										{{ commande.user.email }}
-									{% else %}
-										Client anonyme
-									{% endif %}
+								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+									<div class="flex items-center">
+										<div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+											<i class="fas fa-user text-blue-500"></i>
+										</div>
+										<div class="ml-4">
+											<div class="text-sm font-medium text-gray-900">
+												{% if commande.user %}
+													{{ commande.user.email }}
+												{% else %}
+													Client anonyme
+												{% endif %}
+											</div>
+											<div class="text-sm text-gray-500">
+												{% if commande.user %}
+													ID:
+													{{ commande.user.id }}
+												{% endif %}
+											</div>
+										</div>
+									</div>
 								</td>
-								<td>{{ commande.createdAt|date('d/m/Y H:i') }}</td>
-								<td>{{ commande.total|number_format(2, ',', ' ') }}
-									TND</td>
-								<td>
+								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+									<div class="text-gray-900">{{ commande.createdAt|date('d/m/Y') }}</div>
+									<div class="text-gray-500">{{ commande.createdAt|date('H:i') }}</div>
+								</td>
+								<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+									{{ commande.total|number_format(2, ',', ' ') }}
+									TND
+								</td>
+								<td class="px-6 py-4 whitespace-nowrap">
 									{% if commande.statut == constant('App\\Enum\\TStatutCommande::CONFIRMED') %}
-										<span class="badge bg-success">{{ commande.statut.value }}</span>
+										<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+											<i class="fas fa-check-circle mr-1"></i>
+											{{ commande.statut.value }}
+										</span>
 									{% elseif commande.statut == constant('App\\Enum\\TStatutCommande::EN_ATTENTE') %}
-										<span class="badge bg-warning text-dark">{{ commande.statut.value }}</span>
+										<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+											<i class="fas fa-clock mr-1"></i>
+											{{ commande.statut.value }}
+										</span>
 									{% elseif commande.statut == constant('App\\Enum\\TStatutCommande::ANNULEE') %}
-										<span class="badge bg-danger">{{ commande.statut.value }}</span>
+										<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+											<i class="fas fa-times-circle mr-1"></i>
+											{{ commande.statut.value }}
+										</span>
 									{% endif %}
 								</td>
-								<td>
-									<a href="{{ path('app_admin_commande_detail', {'id': commande.id}) }}" class="btn btn-sm btn-info">
+								<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+									<a href="{{ path('app_admin_commande_detail', {'id': commande.id}) }}" class="text-blue-600 hover:text-blue-900 mr-3" title="Voir détails">
 										<i class="fas fa-eye"></i>
-										Détails
 									</a>
 								</td>
 							</tr>
 						{% endfor %}
 					</tbody>
 				</table>
+			</div>
+
+			<div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+				<div class="text-sm text-gray-500">
+					Affichage de
+					<span class="font-medium">{{ commandes.getItemNumberPerPage * (commandes.getCurrentPageNumber - 1) + 1 }}</span>
+					à
+					<span class="font-medium">{{ min(commandes.getItemNumberPerPage * commandes.getCurrentPageNumber, commandes.getTotalItemCount) }}</span>
+					sur
+					<span class="font-medium">{{ commandes.getTotalItemCount }}</span>
+					commandes
+				</div>
+				<div class="flex space-x-2">
+					{% if commandes.getCurrentPageNumber > 1 %}
+						<a href="{{ path('app_admin_commande', {'page': commandes.getCurrentPageNumber - 1}) }}" class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+							Précédent
+						</a>
+					{% else %}
+						<button disabled class="px-3 py-1 border rounded-md text-sm font-medium text-gray-400 bg-gray-100 cursor-not-allowed">
+							Précédent
+						</button>
+					{% endif %}
+
+					{% for page in 1..commandes.getPageCount %}
+						<a href="{{ path('app_admin_commande', {'page': page}) }}" class="px-3 py-1 border rounded-md text-sm font-medium {% if page == commandes.getCurrentPageNumber %}bg-blue-500 text-white{% else %}text-gray-700 bg-white hover:bg-gray-50{% endif %}">
+							{{ page }}
+						</a>
+					{% endfor %}
+
+					{% if commandes.getCurrentPageNumber < commandes.getPageCount %}
+						<a href="{{ path('app_admin_commande', {'page': commandes.getCurrentPageNumber + 1}) }}" class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+							Suivant
+						</a>
+					{% else %}
+						<button disabled class="px-3 py-1 border rounded-md text-sm font-medium text-gray-400 bg-gray-100 cursor-not-allowed">
+							Suivant
+						</button>
+					{% endif %}
+				</div>
 			</div>
 		</div>
 	</div>
