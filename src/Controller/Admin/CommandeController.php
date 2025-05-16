@@ -45,7 +45,7 @@ final class CommandeController extends AbstractController
     #[Route('/{id}', name: 'app_admin_commande_detail')]
     public function detail(Commande $commande): Response
     {
-        return $this->render('admin/commande/detail.html.twig', [
+        return $this->render('admin/commande/details.html.twig', [
             'commande' => $commande,
         ]);
     }

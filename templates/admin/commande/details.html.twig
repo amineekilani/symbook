@@ -1,0 +1,245 @@
+{% extends 'admin/baseAdmin.html.twig' %}
+
+{% block title %}Détail de la commande #{{ commande.id }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid px-4 py-6">
+    <!-- Header with breadcrumb -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Commande #{{ commande.id }}</h1>
+            <nav class="flex mt-2" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                    <li class="inline-flex items-center">
+                        <a href="{{ path('app_dashboard') }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-home mr-2"></i>
+                            Tableau de bord
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                            <a href="{{ path('app_admin_commande') }}" class="ml-1 text-sm font-medium text-blue-600 hover:text-blue-800 md:ml-2">Commandes</a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Commande #{{ commande.id }}</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{{ path('app_admin_commande') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Retour aux commandes
+            </a>
+        </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded" role="alert">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <p>{{ message }}</p>
+            </div>
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded" role="alert">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <p>{{ message }}</p>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left column - Order items -->
+        <div class="lg:col-span-2">
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center">
+                        <i class="fas fa-box-open text-blue-500 mr-2"></i>
+                        <h2 class="text-lg font-semibold text-gray-800">Produits commandés</h2>
+                    </div>
+                </div>
+                
+                {% if commande.commandeDetailsArray %}
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix unitaire</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantité</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% for item in commande.commandeDetailsArray %}
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            {% if item.image is defined and item.image %}
+                                                <div class="flex-shrink-0 h-16 w-12 overflow-hidden rounded">
+                                                    <img src="{{ asset('uploads/' ~ item.image) }}" alt="{{ item.title }}" class="h-full w-full object-cover">
+                                                </div>
+                                            {% else %}
+                                                <div class="flex-shrink-0 h-16 w-12 bg-gray-100 rounded flex items-center justify-center">
+                                                    <i class="fas fa-book text-gray-400"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">{{ item.title }}</div>
+                                                {% if item.editor is defined %}
+                                                    <div class="text-sm text-gray-500">{{ item.editor }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ item.price|number_format(2, ',', ' ') }} TND
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ item.quantity }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ (item.price * item.quantity)|number_format(2, ',', ' ') }} TND
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="bg-gray-50">
+                                <tr>
+                                    <td colspan="3" class="px-6 py-3 text-right text-sm font-medium text-gray-500">
+                                        Total:
+                                    </td>
+                                    <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ commande.total|number_format(2, ',', ' ') }} TND
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="p-6 text-center">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-yellow-700">
+                                        Aucun détail disponible pour cette commande.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right column - Order info and actions -->
+        <div class="space-y-6">
+            <!-- Order status card -->
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center">
+                        <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                        <h2 class="text-lg font-semibold text-gray-800">Statut de la commande</h2>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="mb-4">
+                        <h3 class="text-sm font-medium text-gray-500 mb-2">Statut actuel</h3>
+                        <div class="flex items-center">
+                            {% if commande.statut == constant('App\\Enum\\TStatutCommande::CONFIRMED') %}
+                                <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    {{ commande.statut.value }}
+                                </span>
+                            {% elseif commande.statut == constant('App\\Enum\\TStatutCommande::EN_ATTENTE') %}
+                                <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    {{ commande.statut.value }}
+                                </span>
+                            {% elseif commande.statut == constant('App\\Enum\\TStatutCommande::ANNULEE') %}
+                                <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    <i class="fas fa-times-circle mr-1"></i>
+                                    {{ commande.statut.value }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-sm font-medium text-gray-500 mb-2">Changer le statut</h3>
+                        <div class="space-y-2">
+                            {% if commande.statut != constant('App\\Enum\\TStatutCommande::CONFIRMED') %}
+                                <a href="{{ path('app_admin_commande_confirm', {'id': commande.id}) }}" class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    Confirmer la commande
+                                </a>
+                            {% endif %}
+                            
+                            {% if commande.statut != constant('App\\Enum\\TStatutCommande::EN_ATTENTE') %}
+                                <a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'pending'}) }}" class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    Marquer comme en attente
+                                </a>
+                            {% endif %}
+                            
+                            {% if commande.statut != constant('App\\Enum\\TStatutCommande::ANNULEE') %}
+                                <a href="{{ path('app_admin_commande_change_status', {'id': commande.id, 'status': 'cancelled'}) }}" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette commande?')" class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                    <i class="fas fa-times-circle mr-2"></i>
+                                    Annuler la commande
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order details card -->
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center">
+                        <i class="fas fa-receipt text-blue-500 mr-2"></i>
+                        <h2 class="text-lg font-semibold text-gray-800">Détails de la commande</h2>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">Date de commande</h3>
+                            <p class="mt-1 text-sm text-gray-900">{{ commande.createdAt|date('d/m/Y à H:i') }}</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">Client</h3>
+                            <p class="mt-1 text-sm text-gray-900">
+                                {% if commande.user %}
+                                    {{ commande.user.email }}
+                                    <span class="text-gray-500 block">ID: {{ commande.user.id }}</span>
+                                {% else %}
+                                    Client anonyme
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">Total</h3>
+                            <p class="mt-1 text-lg font-semibold text-gray-900">{{ commande.total|number_format(2, ',', ' ') }} TND</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
