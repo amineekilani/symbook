@@ -85,7 +85,7 @@ class EmailService
                     
                     <p>Bonjour <strong>$username</strong>,</p>
                     
-                    <p>Nous vous confirmons que votre commande a bien été reçue et que votre paiement a été traité avec succès.</p>
+                    <p>Nous vous confirmons que votre commande est en cours de traitement et que votre paiement a été traité avec succès.</p>
                     
                     <div style='background-color: #f9fafb; padding: 15px; border-radius: 5px; margin: 20px 0;'>
                         <h2 style='color: #4f46e5; font-size: 18px;'>Récapitulatif de la commande</h2>

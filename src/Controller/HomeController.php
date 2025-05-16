@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Livre;
 use App\Repository\LivreRepository;
 use App\Repository\CategorieRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,29 +17,27 @@ class HomeController extends AbstractController
 {
     // Route to view the book catalogue
     #[Route('/', name: 'home_catalogue', methods: ['GET'])]
-    public function catalogue(Request $request, LivreRepository $livreRepository, CategorieRepository $categorieRepository): Response
+    public function catalogue(Request $request, CategorieRepository $categorieRepository, LivreRepository $livreRepository, PaginatorInterface $paginator): Response
     {
-        // Get search parameters from query string
-        $title = $request->query->get('title');
-        $editeur = $request->query->get('editeur');  // Change 'author' to 'editeur' here
-        $categoryId = $request->query->get('category');
+        $title = $request->query->get('title', '');
+        $editeur = $request->query->get('editeur', '');
+        $categoryId = $request->query->get('category', '');
 
-        // Cast categoryId to an integer or null if empty
-        $categoryId = $categoryId ? (int)$categoryId : null;
+        $query = $livreRepository->findByFilters($title, $editeur, $categoryId);
 
-        // Get categories for the filter dropdown
-        $categories = $categorieRepository->findAll();
-
-        // Query books by title, editeur (publisher), and category using the custom method
-        $livres = $livreRepository->findByFilters($title, $editeur, $categoryId);
+        // Pagination - 4 livres par page
+        $livres = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),  // Paramètre page dans l'URL, par défaut 1
+            4                                    // Nombre d'éléments par page
+        );
 
         return $this->render('home/catalogue.html.twig', [
             'livres' => $livres,
-            'categories' => $categories,
             'title' => $title,
-            'editeur' => $editeur,  // Pass 'editeur' instead of 'author'
+            'editeur' => $editeur,
             'categoryId' => $categoryId,
-            'cart' => $request->getSession()->get('cart', [])
+            'categories' => $categorieRepository->findAll(),
         ]);
     }
 
@@ -123,7 +122,7 @@ class HomeController extends AbstractController
                     $item['quantity'] = $quantity;
                 } else {
                     // If the quantity is 0, remove the item
-                    $cart = array_filter($cart, function($cartItem) use ($id) {
+                    $cart = array_filter($cart, function ($cartItem) use ($id) {
                         return $cartItem['id'] != $id;
                     });
                     $cart = array_values($cart);  // Re-index the array
