@@ -16,7 +16,9 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            custom_authenticator: App\Security\UserAuthenticator
+            custom_authenticator:
+                - App\Security\UserAuthenticator
+                - App\Security\GoogleAuthenticator
             user_checker: App\Security\UserChecker
             logout:
                 path: app_logout
@@ -40,6 +42,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+         - { path: ^/connect/google/check$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/admin, roles: ROLE_ADMIN }
          - { path: ^/profile, roles: ROLE_USER }
 

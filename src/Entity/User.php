@@ -9,9 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+// Consider adding a unique constraint for googleId if you want to ensure it's unique
+// #[ORM\UniqueConstraint(name: 'UNIQ_GOOGLE_ID', fields: ['googleId'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -50,6 +53,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $resetTokenExpiresAt = null;
 
+    //region ADDED: googleId property
+    #[ORM\Column(length: 255, nullable: true, unique: true)] // Made it unique and nullable
+    private ?string $googleId = null;
+    //endregion
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
@@ -59,6 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->id;
     }
+
 
     public function getEmail(): ?string
     {
@@ -206,4 +215,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    //region ADDED: Getter and Setter for googleId
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(?string $googleId): static
+    {
+        $this->googleId = $googleId;
+
+        return $this;
+    }
+    //endregion
 }
