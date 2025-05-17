@@ -58,7 +58,7 @@ final class LivreController extends AbstractController
                 'Content-Type' => 'application/json',
             ],
             'json' => [
-                'model' => 'deepseek/deepseek-r1',
+                'model' => 'deepseek/deepseek-r1:free',
                 'messages' => [
                     [
                         'role' => 'user',
