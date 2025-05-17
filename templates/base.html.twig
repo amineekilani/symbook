@@ -483,34 +483,49 @@ document.getElementById(typingIndicatorId).remove();
 // Add AI response
 let aiResponseHTML = "";
 
-// If books were found, display only titles
-if (data.books && data.books.length > 0) {
+// Check if books array exists
+if (data.books) { // If books were found, display titles
+if (data.books.length > 0) {
 console.log('Book data:', data.books);
 aiResponseHTML += `
-                            <div class="flex mb-4">
-                                <div class="flex-shrink-0 mr-3">
-                                    <div class="w-8"></div>
-                                </div>
-                                <div class="bg-white p-3 rounded-lg shadow max-w-[80%] w-full">
-                                    <p class="text-gray-700 font-medium mb-2">Suggestions :</p>
-                                    <div class="space-y-2">
-                        `;
+            <div class="flex mb-4">
+                <div class="flex-shrink-0 mr-3">
+                    <div class="w-8"></div>
+                </div>
+                <div class="bg-white p-3 rounded-lg shadow max-w-[80%] w-full">
+                    <p class="text-gray-700 font-medium mb-2">Suggestions :</p>
+                    <div class="space-y-2">
+        `;
 
 data.books.forEach(book => {
 aiResponseHTML += `
-                                <div class="text-indigo-600 hover:text-indigo-800 transition">
-                                    ${
+                <div class="text-indigo-600 hover:text-indigo-800 transition">
+                    ${
 typeof book === 'object' ? (book.titre || book.title || "Titre indisponible") : book
 }
-                                </div>
-                            `;
+                </div>
+            `;
 });
 
 aiResponseHTML += `
-                                    </div>
-                                </div>
-                            </div>
-                        `;
+                    </div>
+                </div>
+            </div>
+        `;
+} else { // No books found
+aiResponseHTML += `
+            <div class="flex mb-4">
+                <div class="flex-shrink-0 mr-3">
+                    <div class="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 text-white">
+                        <i class="fas fa-robot text-sm"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-3 rounded-lg shadow max-w-[80%]">
+                    <p class="text-gray-700">Désolé, aucun livre correspondant n'a été trouvé.</p>
+                </div>
+            </div>
+        `;
+}
 }
 
 // Add response to messages
