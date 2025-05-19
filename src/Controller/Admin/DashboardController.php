@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Commande;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,47 +22,46 @@ class DashboardController extends AbstractController
             'total_revenue' => 12489,
         ];
 
-        $recentOrders = [
-            [
-                'id' => 'ORD-1001',
-                'customer' => 'Jean Dupont',
-                'status' => 'Livré',
-                'total' => 45.99,
-            ],
-            [
-                'id' => 'ORD-1002',
-                'customer' => 'Marie Martin',
-                'status' => 'En cours',
-                'total' => 89.50,
-            ],
-            [
-                'id' => 'ORD-1003',
-                'customer' => 'Pierre Bernard',
-                'status' => 'Expédié',
-                'total' => 32.25,
-            ],
-            [
-                'id' => 'ORD-1004',
-                'customer' => 'Sophie Leroy',
-                'status' => 'Annulé',
-                'total' => 67.80,
-            ],
-            [
-                'id' => 'ORD-1005',
-                'customer' => 'Luc Petit',
-                'status' => 'Livré',
-                'total' => 120.00,
-            ],
-        ];
+        // Récupérer les commandes récentes
+        $recentOrders = $entityManager->getRepository(Commande::class)
+            ->createQueryBuilder('c')
+            ->leftJoin('c.user', 'u')
+            ->select('c.id', 'c.statut', 'c.total', 'u.nom as customerName')
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+
+        // Formater les données des commandes récentes
+        $formattedRecentOrders = [];
+        foreach ($recentOrders as $order) {
+            // Convertir l'enum en string
+            $status = $order['statut'];
+            if ($status instanceof \App\Enum\TStatutCommande) {
+                $status = $status->value;
+            }
+
+            $formattedRecentOrders[] = [
+                'id' => $order['id'],
+                'customer' => $order['customerName'] ?? 'Client inconnu',
+                'status' => $status,
+                'total' => $order['total'],
+            ];
+        }
 
         // Récupérer les clients fidèles
         // Nous utiliserons 'total' au lieu de 'montantTotal' en nous basant sur l'erreur
         $loyalCustomers = $entityManager->getRepository(User::class)
             ->createQueryBuilder('u')
             ->innerJoin('u.commandes', 'c')
-            ->select('u.id', 'u.email', 'u.nom', 'u.roles', 
-                    'COUNT(c.id) as orderCount', 
-                    'SUM(c.total) as totalSpent')
+            ->select(
+                'u.id',
+                'u.email',
+                'u.nom',
+                'u.roles',
+                'COUNT(c.id) as orderCount',
+                'SUM(c.total) as totalSpent'
+            )
             ->groupBy('u.id')
             ->orderBy('totalSpent', 'DESC')
             ->setMaxResults(5)
@@ -83,7 +83,7 @@ class DashboardController extends AbstractController
 
         return $this->render('admin/dashboard/index.html.twig', [
             'stats' => $stats,
-            'recentOrders' => $recentOrders,
+            'recentOrders' => $formattedRecentOrders,
             'loyalCustomers' => $formattedLoyalCustomers,
         ]);
     }
