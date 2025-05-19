@@ -56,6 +56,9 @@ class Livre
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    #[ORM\Column]
+    private ?int $score = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -208,5 +211,17 @@ class Livre
     public function updateTimestamp(): void
     {
         $this->updatedAt = new \DateTime();
+    }
+
+    public function getScore(): ?int
+    {
+        return $this->score;
+    }
+
+    public function setScore(int $score): static
+    {
+        $this->score = $score;
+
+        return $this;
     }
 }

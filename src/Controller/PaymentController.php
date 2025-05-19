@@ -105,6 +105,9 @@ class PaymentController extends AbstractController
                     // S'assurer que la quantité ne devient pas négative
                     $livre->setQuantite(max(0, $newQuantity));
 
+                    // Incrémenter le score du livre avec la quantité achetée
+                    $livre->setScore($livre->getScore() + $item['quantity']);
+
                     // Persister les changements
                     $entityManager->persist($livre);
                 }

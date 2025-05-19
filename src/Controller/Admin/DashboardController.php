@@ -132,13 +132,22 @@ class DashboardController extends AbstractController
         // 12 derniers mois
         $orders12Months = $this->getOrdersByPeriod($entityManager, 12, 'month');
 
+        // Récupérer le livre avec le score maximum
+        $topBook = $entityManager->getRepository(Livre::class)
+            ->createQueryBuilder('l')
+            ->orderBy('l.score', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
         return $this->render('admin/dashboard/index.html.twig', [
             'stats' => $stats,
             'recentOrders' => $formattedRecentOrders,
             'loyalCustomers' => $formattedLoyalCustomers,
             'ordersByDate7Days' => $orders7Days,
             'ordersByDate30Days' => $orders30Days,
-            'ordersByDate12Months' => $orders12Months
+            'ordersByDate12Months' => $orders12Months,
+            'topBook' => $topBook
         ]);
     }
 
