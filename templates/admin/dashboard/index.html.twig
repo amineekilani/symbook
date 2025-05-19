@@ -189,10 +189,10 @@
 							<div class="flex justify-between items-center mb-4">
 								<h2 class="text-lg font-semibold">Commandes par Période</h2>
 								<div class="relative">
-									<select class="bg-gray-100 border border-gray-300 text-gray-700 py-1 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-										<option>7 derniers jours</option>
-										<option>30 derniers jours</option>
-										<option>12 derniers mois</option>
+									<select id="period-select" class="bg-gray-100 border border-gray-300 text-gray-700 py-1 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+										<option value="7days" selected>7 derniers jours</option>
+										<option value="30days">30 derniers jours</option>
+										<option value="12months">12 derniers mois</option>
 									</select>
 								</div>
 							</div>
@@ -225,14 +225,15 @@
 												<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ order.customer }}</td>
 												<td class="px-6 py-4 whitespace-nowrap">
 													<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-													    {% if order.status == 'Confirmée' %}bg-green-100 text-green-800
-														{% elseif order.status == 'En attente de confirmation' %}bg-yellow-100 text-yellow-800
-														{% elseif order.status == 'Annulée' %}bg-red-100 text-red-800
-														{% else %}bg-gray-100 text-gray-800{% endif %}">
+																																																																																								    {% if order.status == 'Confirmée' %}bg-green-100 text-green-800
+																																																																																									{% elseif order.status == 'En attente de confirmation' %}bg-yellow-100 text-yellow-800
+																																																																																									{% elseif order.status == 'Annulée' %}bg-red-100 text-red-800
+																																																																																									{% else %}bg-gray-100 text-gray-800{% endif %}">
 														{{ order.status }}
 													</span>
 												</td>
-												<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ order.total }} TND</td>
+												<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ order.total }}
+													TND</td>
 											</tr>
 										{% endfor %}
 									</tbody>
@@ -308,7 +309,10 @@ this.classList.add('active-nav');
 });
 
 // Google Charts
-google.charts.load('current', {'packages': ['corechart']});
+google.charts.load('current', {
+'packages': ['corechart'],
+'language': 'fr'
+});
 google.charts.setOnLoadCallback(drawCharts);
 
 function drawCharts() { // Top Book Chart
@@ -357,35 +361,27 @@ height: '70%'
 var topBookChart = new google.visualization.BarChart(document.getElementById('top-book-chart'));
 topBookChart.draw(topBookData, topBookOptions);
 
-// Orders Chart
-var ordersData = google.visualization.arrayToDataTable([
+// Données pour les différentes périodes
+var ordersData7Days = google.visualization.arrayToDataTable([
 [
 'Date', 'Commandes'
-],
-[
-'1 Jan', 12
-],
-[
-'2 Jan', 19
-],
-[
-'3 Jan', 8
-],
-[
-'4 Jan', 14
-],
-[
-'5 Jan', 21
-],
-[
-'6 Jan', 15
-],
-[
-'7 Jan', 17
-]
+],{% for order in ordersByDate7Days %}['{{ order.date }}', {{ order.count }}]{% if not loop.last %},{% endif %}{% endfor %}
 ]);
 
-var ordersOptions = {
+var ordersData30Days = google.visualization.arrayToDataTable([
+[
+'Date', 'Commandes'
+],{% for order in ordersByDate30Days %}['{{ order.date }}', {{ order.count }}]{% if not loop.last %},{% endif %}{% endfor %}
+]);
+
+var ordersData12Months = google.visualization.arrayToDataTable([
+[
+'Date', 'Commandes'
+],{% for order in ordersByDate12Months %}['{{ order.date }}', {{ order.count }}]{% if not loop.last %},{% endif %}{% endfor %}
+]);
+
+// Options pour le graphique de commandes
+var ordersOptions7Days = {
 title: 'Commandes des 7 derniers jours',
 titleTextStyle: {
 fontSize: 16
@@ -399,11 +395,74 @@ pointSize: 5,
 chartArea: {
 width: '85%',
 height: '70%'
+},
+hAxis: {
+format: 'dd/MM',
+slantedText: true,
+slantedTextAngle: 45
 }
 };
 
+var ordersOptions30Days = {
+title: 'Commandes des 30 derniers jours',
+titleTextStyle: {
+fontSize: 16
+},
+curveType: 'function',
+legend: {
+position: 'none'
+},
+colors: ['#10b981'],
+pointSize: 5,
+chartArea: {
+width: '85%',
+height: '70%'
+},
+hAxis: {
+format: 'dd/MM',
+slantedText: true,
+slantedTextAngle: 45
+}
+};
+
+var ordersOptions12Months = {
+title: 'Commandes des 12 derniers mois',
+titleTextStyle: {
+fontSize: 16
+},
+curveType: 'function',
+legend: {
+position: 'none'
+},
+colors: ['#10b981'],
+pointSize: 5,
+chartArea: {
+width: '85%',
+height: '70%'
+},
+hAxis: {
+format: 'MM/yyyy',
+slantedText: true,
+slantedTextAngle: 45
+}
+};
+
+// Dessiner le graphique par défaut (7 jours)
 var ordersChart = new google.visualization.LineChart(document.getElementById('orders-chart'));
-ordersChart.draw(ordersData, ordersOptions);
+ordersChart.draw(ordersData7Days, ordersOptions7Days);
+
+// Gérer le changement de période
+document.getElementById('period-select').addEventListener('change', function () {
+var period = this.value;
+
+if (period === '7days') {
+ordersChart.draw(ordersData7Days, ordersOptions7Days);
+} else if (period === '30days') {
+ordersChart.draw(ordersData30Days, ordersOptions30Days);
+} else if (period === '12months') {
+ordersChart.draw(ordersData12Months, ordersOptions12Months);
+}
+});
 }
 
 // Resize charts on window resize
