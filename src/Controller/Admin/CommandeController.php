@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/admin/commande')]
 final class CommandeController extends AbstractController
 {
-    #[Route('/', name: 'app_admin_commande')]
+    #[Route(name: 'app_admin_commande')]
     public function index(Request $request, CommandeRepository $commandeRepository, PaginatorInterface $paginator): Response
     {
         $statut = $request->query->get('statut');

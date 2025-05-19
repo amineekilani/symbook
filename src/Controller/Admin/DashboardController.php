@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
+use App\Entity\Livre;
 use DateTime;
 
 class DashboardController extends AbstractController
@@ -16,12 +17,49 @@ class DashboardController extends AbstractController
     #[Route('/admin', name: 'app_dashboard')]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Données statiques pour l'exemple
+        // Récupérer le nombre réel d'utilisateurs de la base de données
+        $activeUsersCount = $entityManager->getRepository(User::class)
+            ->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Récupérer le nombre total de livres en stock
+        $booksInStock = $entityManager->getRepository(Livre::class)
+            ->createQueryBuilder('l')
+            ->select('SUM(l.quantite)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Récupérer le nombre de commandes d'aujourd'hui
+        $today = new DateTime();
+        $today->setTime(0, 0, 0);
+        $tomorrow = clone $today;
+        $tomorrow->modify('+1 day');
+
+        $todayOrders = $entityManager->getRepository(Commande::class)
+            ->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.createdAt >= :today')
+            ->andWhere('c.createdAt < :tomorrow')
+            ->setParameter('today', $today)
+            ->setParameter('tomorrow', $tomorrow)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Calculer le revenu total
+        $totalRevenue = $entityManager->getRepository(Commande::class)
+            ->createQueryBuilder('c')
+            ->select('SUM(c.total)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Données pour le dashboard
         $stats = [
-            'books_in_stock' => 1248,
-            'today_orders' => 42,
-            'active_users' => 873,
-            'total_revenue' => 12489,
+            'books_in_stock' => $booksInStock ?: 0,
+            'today_orders' => $todayOrders ?: 0,
+            'active_users' => $activeUsersCount ?: 0,
+            'total_revenue' => $totalRevenue ?: 0,
         ];
 
         // Récupérer les commandes récentes
