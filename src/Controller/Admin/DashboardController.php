@@ -2,93 +2,190 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Commande;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use App\Entity\Livre;
+use DateTime;
 
 class DashboardController extends AbstractController
 {
     #[Route('/admin', name: 'app_dashboard')]
-    public function index(): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Données statiques pour l'exemple
+        // Récupérer le nombre réel d'utilisateurs de la base de données
+        $activeUsersCount = $entityManager->getRepository(User::class)
+            ->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Récupérer le nombre total de livres en stock
+        $booksInStock = $entityManager->getRepository(Livre::class)
+            ->createQueryBuilder('l')
+            ->select('SUM(l.quantite)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Récupérer le nombre de commandes d'aujourd'hui
+        $today = new DateTime();
+        $today->setTime(0, 0, 0);
+        $tomorrow = clone $today;
+        $tomorrow->modify('+1 day');
+
+        $todayOrders = $entityManager->getRepository(Commande::class)
+            ->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.createdAt >= :today')
+            ->andWhere('c.createdAt < :tomorrow')
+            ->setParameter('today', $today)
+            ->setParameter('tomorrow', $tomorrow)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Calculer le revenu total
+        $totalRevenue = $entityManager->getRepository(Commande::class)
+            ->createQueryBuilder('c')
+            ->select('SUM(c.total)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Données pour le dashboard
         $stats = [
-            'books_in_stock' => 1248,
-            'today_orders' => 42,
-            'active_users' => 873,
-            'total_revenue' => 12489,
+            'books_in_stock' => $booksInStock ?: 0,
+            'today_orders' => $todayOrders ?: 0,
+            'active_users' => $activeUsersCount ?: 0,
+            'total_revenue' => $totalRevenue ?: 0,
         ];
 
-        $recentOrders = [
-            [
-                'id' => 'ORD-1001',
-                'customer' => 'Jean Dupont',
-                'status' => 'Livré',
-                'total' => 45.99,
-            ],
-            [
-                'id' => 'ORD-1002',
-                'customer' => 'Marie Martin',
-                'status' => 'En cours',
-                'total' => 89.50,
-            ],
-            [
-                'id' => 'ORD-1003',
-                'customer' => 'Pierre Bernard',
-                'status' => 'Expédié',
-                'total' => 32.25,
-            ],
-            [
-                'id' => 'ORD-1004',
-                'customer' => 'Sophie Leroy',
-                'status' => 'Annulé',
-                'total' => 67.80,
-            ],
-            [
-                'id' => 'ORD-1005',
-                'customer' => 'Luc Petit',
-                'status' => 'Livré',
-                'total' => 120.00,
-            ],
-        ];
+        // Récupérer les commandes récentes
+        $recentOrders = $entityManager->getRepository(Commande::class)
+            ->createQueryBuilder('c')
+            ->leftJoin('c.user', 'u')
+            ->select('c.id', 'c.statut', 'c.total', 'u.nom as customerName')
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
 
-        $loyalCustomers = [
-            [
-                'name' => 'Sophie Leroy',
-                'orders' => 15,
-                'total_spent' => 1245,
-                'status' => 'VIP',
-            ],
-            [
-                'name' => 'Jean Dupont',
-                'orders' => 12,
-                'total_spent' => 980,
-                'status' => 'VIP',
-            ],
-            [
-                'name' => 'Marie Martin',
-                'orders' => 9,
-                'total_spent' => 765,
-                'status' => 'Régulier',
-            ],
-            [
-                'name' => 'Pierre Bernard',
-                'orders' => 7,
-                'total_spent' => 620,
-                'status' => 'Régulier',
-            ],
-            [
-                'name' => 'Luc Petit',
-                'orders' => 6,
-                'total_spent' => 540,
-                'status' => 'Régulier',
-            ],
-        ];
+        // Formater les données des commandes récentes
+        $formattedRecentOrders = [];
+        foreach ($recentOrders as $order) {
+            // Convertir l'enum en string
+            $status = $order['statut'];
+            if ($status instanceof \App\Enum\TStatutCommande) {
+                $status = $status->value;
+            }
+
+            $formattedRecentOrders[] = [
+                'id' => $order['id'],
+                'customer' => $order['customerName'] ?? 'Client inconnu',
+                'status' => $status,
+                'total' => $order['total'],
+            ];
+        }
+
+        // Récupérer les clients fidèles
+        $loyalCustomers = $entityManager->getRepository(User::class)
+            ->createQueryBuilder('u')
+            ->innerJoin('u.commandes', 'c')
+            ->select(
+                'u.id',
+                'u.email',
+                'u.nom',
+                'u.roles',
+                'COUNT(c.id) as orderCount',
+                'SUM(c.total) as totalSpent'
+            )
+            ->groupBy('u.id')
+            ->orderBy('totalSpent', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+
+        // Formater les données des clients fidèles
+        $formattedLoyalCustomers = [];
+        foreach ($loyalCustomers as $customer) {
+            $formattedLoyalCustomers[] = [
+                'id' => $customer['id'],
+                'name' => $customer['nom'],
+                'orders' => $customer['orderCount'],
+                'total_spent' => number_format($customer['totalSpent'], 2),
+                'status' => $customer['totalSpent'] > 1000 ? 'VIP' : 'Fidèle',
+                'email' => $customer['email'],
+            ];
+        }
+
+        // Préparer les données pour tous les types de périodes
+        $ordersByDate = [];
+
+        // 7 derniers jours
+        $orders7Days = $this->getOrdersByPeriod($entityManager, 7, 'day');
+
+        // 30 derniers jours
+        $orders30Days = $this->getOrdersByPeriod($entityManager, 30, 'day');
+
+        // 12 derniers mois
+        $orders12Months = $this->getOrdersByPeriod($entityManager, 12, 'month');
 
         return $this->render('admin/dashboard/index.html.twig', [
             'stats' => $stats,
-            'recentOrders' => $recentOrders,
-            'loyalCustomers' => $loyalCustomers,
+            'recentOrders' => $formattedRecentOrders,
+            'loyalCustomers' => $formattedLoyalCustomers,
+            'ordersByDate7Days' => $orders7Days,
+            'ordersByDate30Days' => $orders30Days,
+            'ordersByDate12Months' => $orders12Months
         ]);
+    }
+
+    /**
+     * Récupère les commandes pour une période donnée
+     */
+    private function getOrdersByPeriod(EntityManagerInterface $entityManager, int $amount, string $period): array
+    {
+        $result = [];
+        $today = new DateTime();
+        $format = ($period === 'month') ? 'M Y' : 'd M';
+
+        for ($i = $amount - 1; $i >= 0; $i--) {
+            $date = clone $today;
+            if ($period === 'month') {
+                $date->modify("-$i months");
+                $startOfPeriod = clone $date;
+                $startOfPeriod->modify('first day of this month');
+                $startOfPeriod->setTime(0, 0, 0);
+
+                $endOfPeriod = clone $date;
+                $endOfPeriod->modify('last day of this month');
+                $endOfPeriod->setTime(23, 59, 59);
+            } else {
+                $date->modify("-$i days");
+                $startOfPeriod = clone $date;
+                $startOfPeriod->setTime(0, 0, 0);
+
+                $endOfPeriod = clone $date;
+                $endOfPeriod->setTime(23, 59, 59);
+            }
+
+            $count = $entityManager->getRepository(Commande::class)
+                ->createQueryBuilder('c')
+                ->select('COUNT(c.id)')
+                ->where('c.createdAt BETWEEN :start AND :end')
+                ->setParameter('start', $startOfPeriod)
+                ->setParameter('end', $endOfPeriod)
+                ->getQuery()
+                ->getSingleScalarResult();
+
+            $result[] = [
+                'date' => $date->format($format),
+                'count' => (int)$count
+            ];
+        }
+
+        return $result;
     }
 }
